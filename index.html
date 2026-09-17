@@ -1,2228 +1,1211 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>BRaiLLE — UI Prototype</title>
-<meta name="description" content="BRaiLLE AI-powered tactile learning platform UI prototype by DotCode — Samsung Solve for Tomorrow 2026">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRaiLLE App Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-900: #212121; --ink-800: #2E2E2E; --ink-700: #3F3F3F; --ink-600: #575757;
+            --ink-500: #6E6E6E; --ink-400: #8A8A8A; --ink-300: #ABABAB; --ink-200: #CECECE; --ink-100: #E5E5E5;
+            --paper-0: #FFFFFF; --paper-50: #F6F5FA; --paper-100: #EDECF3; --paper-200: #E2E1EA;
+            --vanila-100: #F8F8DA; --vanila-200: #EFF0A3; --vanila-300: #DFE070; --vanila-500: #9A9B2E; --vanila-700: #62631A;
+            --honeydew-100: #E9F1E7; --honeydew-200: #CFDECA; --honeydew-300: #AEC6A7; --honeydew-500: #6E8F66; --honeydew-700: #3E5C39;
+            --alice-100: #EDF1F6; --alice-200: #D8DFE9; --alice-300: #B9C5D5; --alice-500: #6F86A3; --alice-700: #3F5570;
+            --alert-100: #F9DEDC; --alert-300: #F2B8B5; --alert-600: #B3261E; --alert-700: #8C1D18;
+            --grad-accent: linear-gradient(135deg, var(--vanila-200), var(--vanila-300));
+            --grad-dark: linear-gradient(135deg, var(--ink-700), var(--ink-900));
+            --shadow-card: 0px 8px 24px rgba(0,0,0,0.06);
+            --shadow-hover: 0px 12px 32px rgba(0,0,0,0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Urbanist', sans-serif; background-color: #181820; color: var(--ink-900);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+        }
 
-<!-- Fonts: Urbanist (brand) + JetBrains Mono (machine) + Material Symbols -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+        /* Switcher Bar */
+        .switcher-bar { display: flex; gap: 8px; padding: 16px; overflow-x: auto; width: 100%; max-width: 900px; margin-bottom: 20px; scrollbar-width: none; }
+        .switcher-bar::-webkit-scrollbar { display: none; }
+        .switcher-btn {
+            background: var(--ink-800); color: var(--paper-0); border: none; border-radius: 9999px;
+            padding: 8px 14px; font-family: 'Urbanist', sans-serif; font-weight: 600; font-size: 13px;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
+        }
+        .switcher-btn:hover { background: var(--ink-600); }
+        .switcher-btn.active { background: var(--grad-accent); color: var(--ink-900); }
 
-<style>
-/* ===================================================================
-   BRaiLLE DESIGN SYSTEM — TOKENS
-   Exact reproduction from the design system zip
-   =================================================================== */
+        /* Language Toggle (outside phone) */
+        .lang-toggle-outer {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+            background: rgba(255,255,255,0.08); border-radius: 9999px; padding: 4px;
+        }
+        .lang-btn {
+            padding: 6px 16px; border-radius: 9999px; border: none; font-family: 'Urbanist', sans-serif;
+            font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s ease;
+            background: transparent; color: rgba(255,255,255,0.5);
+        }
+        .lang-btn.active { background: var(--paper-0); color: var(--ink-900); }
 
-:root {
-  /* Ink — Eerie Black and its greys */
-  --ink-900:#212121;--ink-800:#2E2E2E;--ink-700:#3F3F3F;--ink-600:#575757;--ink-500:#6E6E6E;
-  --ink-400:#8A8A8A;--ink-300:#ABABAB;--ink-200:#CECECE;--ink-100:#E5E5E5;--ink-050:#F1F1F1;
+        /* Phone Frame */
+        .phone-frame {
+            width: 393px; height: 852px; background-color: var(--paper-50); border-radius: 40px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 0 0 10px #0F0F14, 0 0 30px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+        }
+        .notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 32px; background-color: #000; border-radius: 20px; z-index: 100; }
+        .screen-container { flex: 1; position: relative; overflow: hidden; }
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--paper-50); display: none; flex-direction: column;
+            animation: fadeIn 0.3s ease forwards; padding-top: 56px;
+        }
+        .screen.active { display: flex; }
+        .screen-content { flex: 1; overflow-y: auto; padding: 0 24px 24px 24px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
+        .screen-content::-webkit-scrollbar { display: none; }
+        .screen-dark { background: var(--ink-900); color: var(--paper-0); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Paper — Ghost White surfaces */
-  --paper-0:#FFFFFF;--paper-50:#F6F5FA;--paper-100:#EDECF3;--paper-200:#E2E1EA;
+        /* Typography */
+        h1, h2, h3 { font-weight: 800; }
+        h1 { font-size: 32px; line-height: 1.2; }
+        h2 { font-size: 24px; line-height: 1.3; }
+        p { font-weight: 400; font-size: 16px; line-height: 1.5; color: var(--ink-600); }
+        .screen-dark p { color: var(--ink-200); }
 
-  /* Vanila — the highlight / tactile (braille) channel */
-  --vanila-100:#F8F8DA;--vanila-200:#EFF0A3;--vanila-300:#DFE070;--vanila-500:#9A9B2E;--vanila-700:#62631A;
+        /* Icons */
+        .icon {
+            font-family: 'Material Symbols Rounded'; font-weight: normal; font-style: normal;
+            font-size: 24px; display: inline-block; line-height: 1; text-transform: none;
+            letter-spacing: normal; white-space: nowrap; direction: ltr;
+        }
 
-  /* Honeydew — device / BLE / success */
-  --honeydew-100:#E9F1E7;--honeydew-200:#CFDECA;--honeydew-300:#AEC6A7;--honeydew-500:#6E8F66;--honeydew-700:#3E5C39;
+        /* Buttons */
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            border-radius: 9999px; height: 56px; padding: 16px 32px;
+            font-family: 'Urbanist', sans-serif; font-weight: 700; font-size: 17px;
+            border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--grad-accent); color: var(--ink-900); }
+        .btn-dark { background: var(--grad-dark); color: var(--paper-0); }
+        .btn-outline { background: transparent; border: 2px solid var(--ink-200); color: var(--ink-900); }
+        .screen-dark .btn-outline { border-color: var(--ink-700); color: var(--paper-0); }
+        .btn-mini { height: 32px; padding: 4px 14px; font-size: 14px; font-weight: 600; }
+        .btn-danger { background: var(--alert-100); color: var(--alert-700); border: 1px solid var(--alert-300); }
+        .btn-success { background: var(--honeydew-100); color: var(--honeydew-700); }
 
-  /* Alice Blue — data / information / audio (TTS) channel */
-  --alice-100:#EDF1F6;--alice-200:#D8DFE9;--alice-300:#B9C5D5;--alice-500:#6F86A3;--alice-700:#3F5570;
+        /* Cards */
+        .card { background: var(--paper-0); border-radius: 24px; padding: 20px; box-shadow: var(--shadow-card); transition: box-shadow 0.3s, transform 0.3s; }
+        .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .card-flat { box-shadow: none; border: 1px solid var(--paper-200); }
+        .card-flat:hover { box-shadow: none; transform: none; }
 
-  /* Alert */
-  --alert-100:#F9DEDC;--alert-300:#F2B8B5;--alert-600:#B3261E;--alert-700:#8C1D18;
+        /* Tags */
+        .tag { display: inline-flex; align-items: center; gap: 4px; background: var(--paper-100); color: var(--ink-700); padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+        .tag-success { background: var(--honeydew-100); color: var(--honeydew-700); }
+        .tag-alert { background: var(--alert-100); color: var(--alert-700); }
+        .tag-info { background: var(--alice-100); color: var(--alice-700); }
+        .tag-vanila { background: var(--vanila-100); color: var(--vanila-700); }
 
-  /* Typography */
-  --font-display:'Urbanist',system-ui,sans-serif;
-  --font-body:'Urbanist',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+        /* Bottom Nav */
+        .bottom-nav {
+            height: 80px; background: var(--paper-0); border-top: 1px solid var(--paper-100);
+            display: flex; justify-content: space-around; align-items: center;
+            padding-bottom: 20px; position: absolute; bottom: 0; width: 100%; z-index: 10;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink-400); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+        .nav-item.active { color: var(--ink-900); }
+        .nav-item .icon { font-size: 24px; }
+        .nav-item span { font-size: 11px; font-weight: 600; }
+        .bottom-nav-hidden .bottom-nav { display: none; }
+        .bottom-nav-hidden .screen-content { padding-bottom: 24px; }
+        .screen-content.with-nav { padding-bottom: 100px; }
 
-  --text-3xs:11px;--text-2xs:12px;--text-xs:13px;--text-sm:15px;--text-base:17px;--text-lg:20px;
-  --text-xl:24px;--text-2xl:28px;--text-3xl:36px;--text-4xl:48px;--text-5xl:64px;
+        /* Onboarding */
+        .onboarding-hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .braille-illustration { width: 160px; height: 160px; background: var(--alice-100); border-radius: 40px; display: flex; flex-wrap: wrap; gap: 12px; padding: 32px; justify-content: center; align-items: center; margin-bottom: 40px; }
+        .braille-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--ink-200); }
+        .braille-dot.active { background: var(--ink-900); }
 
-  --weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;--weight-black:800;
-  --leading-tight:1.05;--leading-snug:1.25;--leading-normal:1.5;--leading-relaxed:1.6;
-  --tracking-display:-0.02em;--tracking-tight:-0.01em;--tracking-normal:0;--tracking-caps:0.08em;--tracking-mono:0.02em;
+        /* Home */
+        .home-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .home-logo { width: 48px; height: 48px; border-radius: 12px; object-fit: contain; }
+        .device-status { display: flex; align-items: center; gap: 8px; background: var(--paper-0); padding: 8px 16px; border-radius: 9999px; box-shadow: var(--shadow-card); font-size: 14px; font-weight: 600; color: var(--ink-700); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--honeydew-500); }
 
-  --type-display:var(--weight-black) var(--text-4xl)/var(--leading-tight) var(--font-display);
-  --type-title:var(--weight-bold) var(--text-3xl)/var(--leading-snug) var(--font-display);
-  --type-heading:var(--weight-bold) var(--text-xl)/var(--leading-snug) var(--font-display);
-  --type-body-lg:var(--weight-regular) var(--text-lg)/var(--leading-relaxed) var(--font-body);
-  --type-body:var(--weight-regular) var(--text-base)/var(--leading-relaxed) var(--font-body);
-  --type-body-strong:var(--weight-semibold) var(--text-base)/var(--leading-relaxed) var(--font-body);
-  --type-label:var(--weight-semibold) var(--text-sm)/var(--leading-snug) var(--font-body);
-  --type-caption:var(--weight-regular) var(--text-xs)/var(--leading-normal) var(--font-body);
-  --type-overline:var(--weight-semibold) var(--text-2xs)/var(--leading-normal) var(--font-body);
-  --type-data:var(--weight-medium) var(--text-sm)/var(--leading-normal) var(--font-mono);
-  --type-numeral:var(--weight-black) var(--text-4xl)/var(--leading-tight) var(--font-display);
+        /* Camera */
+        .camera-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; display: flex; flex-direction: column; }
+        .viewfinder { position: absolute; top: 15%; left: 5%; width: 90%; height: 50%; border: 2px solid rgba(255,255,255,0.3); border-radius: 24px; }
+        .viewfinder::before, .viewfinder::after, .viewfinder-inner::before, .viewfinder-inner::after { content: ''; position: absolute; width: 40px; height: 40px; border-color: var(--vanila-300); border-style: solid; }
+        .viewfinder::before { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 24px; }
+        .viewfinder::after { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 24px; }
+        .viewfinder-inner { position: absolute; width: 100%; height: 100%; }
+        .viewfinder-inner::before { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 24px; }
+        .viewfinder-inner::after { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 24px; }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: var(--vanila-300); box-shadow: 0 0 10px var(--vanila-300); animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .camera-controls { position: absolute; bottom: 40px; left: 0; width: 100%; display: flex; justify-content: space-evenly; align-items: center; }
+        .shutter-btn { width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--paper-0); background: transparent; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .shutter-btn-inner { width: 56px; height: 56px; border-radius: 50%; background: var(--paper-0); transition: transform 0.1s; }
+        .shutter-btn:active .shutter-btn-inner { transform: scale(0.9); }
+        .icon-btn { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
-  /* Spacing */
-  --space-0:0;--space-05:2px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;
-  --space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
-  --gutter-phone:20px;--card-pad:20px;--card-pad-tight:14px;--section-gap:24px;
-  --tap-min:48px;--tap-comfortable:64px;--focus-ring-width:3px;
-  --dot-size:10px;--dot-gap:6px;--cell-gap:14px;
+        /* OCR Process */
+        .processing-hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .checklist { display: flex; flex-direction: column; gap: 16px; width: 100%; margin-top: 40px; }
+        .check-item { display: flex; align-items: center; gap: 16px; color: var(--ink-300); }
+        .check-item.done { color: var(--paper-0); }
+        .check-item.done .icon { color: var(--honeydew-300); }
+        .check-item.active { color: var(--paper-0); font-weight: 700; }
+        .check-item.active .icon { color: var(--vanila-300); animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
 
-  /* Radius */
-  --radius-xs:4px;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--radius-xl:28px;--radius-pill:999px;
-  --radius-card:16px;--radius-sheet:24px;--radius-control:var(--radius-pill);
-  --border-hair:1px;--border-thick:2px;--border-heavy:3px;
+        /* Circular braille loading animation */
+        .loading-braille-grid {
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr);
+            gap: 12px; width: 80px; height: 110px; margin: 0 auto 32px;
+        }
+        .loading-braille-grid .ldot {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--ink-700);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .loading-braille-grid .ldot.lit {
+            background: var(--vanila-200); box-shadow: 0 0 14px var(--vanila-200);
+        }
 
-  /* Elevation */
-  --shadow-none:none;
-  --shadow-sm:0 1px 2px rgba(33,33,33,.06);
-  --shadow-md:0 2px 8px rgba(33,33,33,.08);
-  --shadow-lg:0 12px 32px rgba(33,33,33,.12);
-  --shadow-sheet:0 -8px 32px rgba(33,33,33,.16);
-  --shadow-pin-raised:inset 0 1.5px 0 rgba(255,255,255,.4),0 1px 2px rgba(33,33,33,.35);
-  --shadow-pin-flat:inset 0 1px 1px rgba(33,33,33,.12);
-  --shadow-focus:0 0 0 var(--focus-ring-width) var(--focus);
+        /* Braille Components */
+        .braille-output-card { background: var(--ink-800); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .braille-word { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .braille-cell { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 4px; background: var(--ink-700); padding: 8px; border-radius: 8px; }
+        .braille-dot-small { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-600); }
+        .braille-dot-small.active { background: var(--vanila-200); }
+        .braille-char-label { text-align: center; color: var(--paper-0); font-weight: 700; margin-top: 4px; font-size: 14px; }
+        .large-braille-cell { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 12px; }
+        .large-braille-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--ink-700); }
+        .large-braille-dot.active { background: var(--vanila-200); box-shadow: 0 0 10px var(--vanila-200); }
 
-  /* Motion */
-  --ease-standard:cubic-bezier(.2,0,0,1);
-  --ease-emphasized:cubic-bezier(.05,.7,.1,1);
-  --ease-exit:cubic-bezier(.3,0,.8,.15);
-  --dur-instant:80ms;--dur-fast:120ms;--dur-base:200ms;--dur-slow:320ms;--dur-pin:400ms;--dur-stream:600ms;
+        .reading-sentence { font-size: 24px; font-weight: 600; line-height: 1.5; color: var(--ink-400); text-align: center; }
+        .reading-sentence .highlight { color: var(--paper-0); background: var(--ink-700); padding: 4px 8px; border-radius: 8px; }
 
-  /* Semantic */
-  --text-body:var(--ink-900);--text-secondary:var(--ink-500);--text-muted:var(--ink-400);
-  --text-inverse:var(--paper-0);--text-accent:var(--vanila-700);--text-link:var(--ink-900);
-  --surface-page:var(--paper-50);--surface-card:var(--paper-0);--surface-muted:var(--paper-100);
-  --surface-inverse:var(--ink-900);--surface-inverse-muted:var(--ink-800);
-  --surface-accent:var(--ink-900);--surface-highlight:var(--vanila-200);
-  --surface-scrim:rgba(33,33,33,.64);--surface-glass:rgba(33,33,33,.72);
-  --border-subtle:var(--ink-100);--border-default:var(--ink-200);--border-strong:var(--ink-900);
-  --border-accent:var(--vanila-300);--border-inverse:rgba(255,255,255,.16);
-  --focus:var(--ink-900);
-  --state-hover-ink:rgba(33,33,33,.06);--state-press-ink:rgba(33,33,33,.12);
-  --state-disabled-fg:var(--ink-300);--state-disabled-bg:var(--paper-100);
-  --status-ok:var(--honeydew-700);--status-ok-bg:var(--honeydew-100);
-  --status-warn:var(--vanila-700);--status-warn-bg:var(--vanila-100);
-  --status-error:var(--alert-600);--status-error-bg:var(--alert-100);
-  --status-info:var(--alice-700);--status-info-bg:var(--alice-100);
-  --channel-tactile:var(--vanila-300);--channel-tactile-bg:var(--vanila-200);--channel-tactile-text:var(--vanila-700);
-  --channel-audio:var(--alice-300);--channel-audio-bg:var(--alice-200);--channel-audio-text:var(--alice-700);
-  --channel-device:var(--honeydew-200);--channel-device-bg:var(--honeydew-100);--channel-device-text:var(--honeydew-700);
-  --dot-raised:var(--ink-900);--dot-flat:var(--ink-100);--dot-active:var(--vanila-500);
-}
+        /* Audio Player */
+        .audio-player { display: flex; align-items: center; gap: 12px; background: var(--paper-100); padding: 12px; border-radius: 9999px; }
+        .audio-progress { flex: 1; height: 4px; background: var(--ink-200); border-radius: 2px; position: relative; }
+        .audio-progress-bar { position: absolute; left: 0; top: 0; height: 100%; width: 40%; background: var(--ink-900); border-radius: 2px; }
 
-@media(prefers-reduced-motion:reduce){:root{
-  --dur-instant:0ms;--dur-fast:0ms;--dur-base:0ms;--dur-slow:0ms;--dur-pin:0ms;--dur-stream:0ms;
-}}
+        /* Voice / Waveform */
+        .waveform-container { display: flex; align-items: center; justify-content: center; gap: 3px; height: 80px; margin: 24px 0; }
+        .wave-bar { width: 6px; background: var(--vanila-300); border-radius: 3px; height: 20px; transition: height 0.2s ease; }
 
-/* ===================================================================
-   BASE RESET
-   =================================================================== */
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:#E2E1EA;
-  font-family:var(--font-body);
-  color:var(--text-body);
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:40px 20px;
-  flex-direction:column;
-  gap:40px;
-}
+        /* Voice Controls */
+        .voice-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 16px; }
+        .voice-btn {
+            width: 56px; height: 56px; border-radius: 50%; border: none; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .voice-btn:active { transform: scale(0.92); }
+        .voice-btn-record { width: 72px; height: 72px; background: var(--alert-600); color: white; box-shadow: 0 4px 20px rgba(179,38,30,0.4); }
+        .voice-btn-record.recording { animation: recordPulse 1.2s ease infinite; }
+        .voice-btn-stop { background: var(--ink-800); color: var(--paper-0); }
+        .voice-btn-play { background: var(--honeydew-100); color: var(--honeydew-700); }
+        @keyframes recordPulse {
+            0% { box-shadow: 0 4px 20px rgba(179,38,30,0.4); }
+            50% { box-shadow: 0 4px 36px rgba(179,38,30,0.7); }
+            100% { box-shadow: 0 4px 20px rgba(179,38,30,0.4); }
+        }
 
-/* Material Symbols icon class */
-.icon{
-  font-family:'Material Symbols Rounded';
-  font-weight:400;font-style:normal;font-size:24px;line-height:1;
-  letter-spacing:normal;text-transform:none;display:inline-block;
-  white-space:nowrap;direction:ltr;
-  -webkit-font-feature-settings:'liga';
-  font-feature-settings:'liga';
-  -webkit-font-smoothing:antialiased;
-  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
-}
-.icon.filled{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24}
+        /* Reading Controls */
+        .reading-controls { display: flex; gap: 12px; width: 100%; margin-top: auto; }
+        .reading-controls .btn { flex: 1; padding: 16px 0; font-size: 15px; }
 
-/* ===================================================================
-   LAYOUT — Stage with side-by-side phones
-   =================================================================== */
-.stage{
-  display:flex;
-  gap:32px;
-  align-items:flex-start;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-.stage-header{
-  text-align:center;
-  max-width:800px;
-}
-.stage-header h1{
-  font:var(--type-display);
-  letter-spacing:var(--tracking-display);
-  color:var(--ink-900);
-  margin-bottom:8px;
-}
-.stage-header p{
-  font:var(--type-body-lg);
-  color:var(--text-secondary);
-}
-.phone-frame{
-  width:393px;
-  height:852px;
-  border-radius:48px;
-  background:var(--ink-900);
-  padding:10px;
-  box-shadow:var(--shadow-lg), 0 32px 64px rgba(33,33,33,.18);
-  flex:0 0 auto;
-  position:relative;
-  overflow:hidden;
-}
-.phone-frame::before{
-  content:'';
-  position:absolute;
-  top:10px;left:50%;transform:translateX(-50%);
-  width:126px;height:32px;
-  background:var(--ink-900);
-  border-radius:0 0 18px 18px;
-  z-index:10;
-}
-.screen{
-  width:100%;
-  height:100%;
-  border-radius:40px;
-  overflow-y:auto;
-  overflow-x:hidden;
-  position:relative;
-  background:var(--surface-page);
-  scrollbar-width:none;
-}
-.screen::-webkit-scrollbar{display:none}
+        /* BLE Connect Page */
+        .ble-device-card {
+            background: var(--paper-0); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-card);
+            display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .ble-device-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .ble-device-card.selected { border-color: var(--honeydew-500); background: var(--honeydew-100); }
+        .ble-icon-wrap {
+            width: 56px; height: 56px; border-radius: 16px; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .ble-scanning { display: flex; align-items: center; gap: 8px; justify-content: center; padding: 16px 0; color: var(--ink-500); font-weight: 600; font-size: 14px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spin-icon { animation: spin 1.5s linear infinite; }
 
-/* Status bar */
-.statusbar{
-  position:sticky;top:0;left:0;right:0;height:44px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;
-  font:var(--type-data);font-size:var(--text-2xs);
-  z-index:5;
-  background:inherit;
-}
-.statusbar.dark{color:var(--paper-0);background:transparent}
+        /* Stat grid for teacher dashboard */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-card { background: var(--paper-0); border-radius: 20px; padding: 16px; box-shadow: var(--shadow-card); text-align: center; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 800; line-height: 1.2; }
+        .stat-card .stat-label { font-size: 12px; color: var(--ink-500); font-weight: 600; margin-top: 4px; }
 
-/* Screen content area */
-.screen-content{
-  padding:0 var(--gutter-phone) var(--gutter-phone);
-  display:flex;flex-direction:column;
-  gap:var(--section-gap);
-  padding-bottom:100px;
-}
+        /* Student list */
+        .student-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--paper-100); }
+        .student-row:last-child { border-bottom: none; }
+        .student-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: white; flex-shrink: 0; }
 
-/* ===================================================================
-   COMPONENTS — Exact ports from JSX
-   =================================================================== */
+        /* Progress bar */
+        .progress-bar-wrap { width: 100%; height: 8px; background: var(--paper-100); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
 
-/* Button */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
-  border-radius:var(--radius-control);
-  font:var(--type-label);letter-spacing:var(--tracking-tight);
-  min-height:var(--tap-min);padding:0 22px;
-  cursor:pointer;border:2px solid transparent;
-  transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard);
-}
-.btn:active{transform:scale(0.98)}
-.btn-primary{background:var(--surface-accent);color:var(--text-inverse)}
-.btn-secondary{background:var(--surface-card);color:var(--text-body);border-color:var(--border-strong)}
-.btn-ghost{background:transparent;color:var(--text-body)}
-.btn-highlight{background:var(--surface-highlight);color:var(--ink-900)}
-.btn-device{background:var(--channel-device);color:var(--ink-900)}
-.btn-inverse{background:var(--paper-0);color:var(--ink-900)}
-.btn-lg{min-height:var(--tap-comfortable);padding:0 28px;font-size:var(--text-lg)}
-.btn-sm{min-height:40px;padding:0 16px;font-size:var(--text-sm)}
-.btn-full{width:100%}
-.btn .icon{font-size:20px}
-
-/* Icon button */
-.icon-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:48px;height:48px;border-radius:var(--radius-pill);
-  cursor:pointer;transition:background var(--dur-fast) var(--ease-standard);
-}
-.icon-btn-primary{background:var(--surface-accent);color:var(--text-inverse);border:2px solid transparent}
-.icon-btn-secondary{background:var(--surface-card);color:var(--text-body);border:2px solid var(--border-strong)}
-.icon-btn-ghost{background:transparent;color:var(--text-body);border:2px solid transparent}
-.icon-btn-muted{background:var(--surface-muted);color:var(--text-body);border:2px solid transparent}
-
-/* Card */
-.card{
-  border-radius:var(--radius-card);padding:var(--card-pad);
-  box-shadow:var(--shadow-sm);
-  transition:box-shadow var(--dur-base) var(--ease-standard);
-}
-.card-paper{background:var(--surface-card);color:var(--text-body);border:1px solid var(--border-subtle)}
-.card-muted{background:var(--surface-muted);color:var(--text-body);border:1px solid transparent}
-.card-inverse{background:var(--surface-inverse);color:var(--text-inverse);border:1px solid var(--border-inverse)}
-.card-accent{background:var(--surface-highlight);color:var(--ink-900);border:1px solid var(--vanila-300)}
-.card-outline{background:transparent;color:var(--text-body);border:2px solid var(--border-strong);box-shadow:none}
-.card.interactive:hover{box-shadow:var(--shadow-md);cursor:pointer}
-
-/* Badge */
-.badge{
-  display:inline-flex;align-items:center;gap:var(--space-1);
-  padding:4px 10px;border-radius:var(--radius-pill);
-  font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);
-}
-.badge-ok{background:var(--status-ok-bg);color:var(--honeydew-700)}
-.badge-warn{background:var(--status-warn-bg);color:var(--vanila-700)}
-.badge-error{background:var(--status-error-bg);color:var(--alert-700)}
-.badge-info{background:var(--status-info-bg);color:var(--alice-700)}
-.badge-solid{background:var(--surface-inverse);color:var(--text-inverse)}
-.badge-tactile{background:var(--channel-tactile-bg);color:var(--ink-900)}
-.badge-audio{background:var(--channel-audio-bg);color:var(--alice-700)}
-.badge .icon{font-size:14px}
-
-/* Section header */
-.section-header{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4)}
-.section-header .overline{
-  font:var(--type-overline);text-transform:uppercase;
-  letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:4px;
-}
-.section-header h2{
-  font:var(--type-title);letter-spacing:var(--tracking-display);
-  text-transform:uppercase;margin:0;
-}
-.section-header h3{
-  font:var(--type-heading);letter-spacing:var(--tracking-display);margin:0;
-}
-
-/* Braille cell — 6 dots in a 2x3 grid */
-.braille-cell{
-  display:inline-grid;
-  grid-template-columns:repeat(2,10px);
-  grid-template-rows:repeat(3,10px);
-  gap:6px;
-}
-.braille-cell.lg{
-  grid-template-columns:repeat(2,16px);
-  grid-template-rows:repeat(3,16px);
-  gap:10px;
-}
-.braille-cell.xl{
-  grid-template-columns:repeat(2,20px);
-  grid-template-rows:repeat(3,20px);
-  gap:12px;
-}
-.braille-dot{
-  width:100%;height:100%;border-radius:50%;
-  transition:background var(--dur-pin) var(--ease-emphasized),box-shadow var(--dur-pin) var(--ease-emphasized),transform var(--dur-pin) var(--ease-emphasized);
-}
-.braille-dot.raised{background:var(--dot-raised);box-shadow:var(--shadow-pin-raised)}
-.braille-dot.flat{background:var(--dot-flat);box-shadow:var(--shadow-pin-flat)}
-.braille-dot.active{background:var(--dot-active);box-shadow:var(--shadow-pin-raised)}
-.braille-dot.raised-inverse{background:var(--paper-0);box-shadow:var(--shadow-pin-raised)}
-.braille-dot.flat-inverse{background:rgba(255,255,255,.15);box-shadow:none}
-.braille-dot.active-inverse{background:var(--vanila-200);box-shadow:var(--shadow-pin-raised)}
-
-/* Braille stream container */
-.braille-stream{
-  display:flex;flex-direction:column;gap:var(--space-4);
-  padding:var(--space-5);border-radius:var(--radius-lg);
-  background:var(--surface-muted);
-}
-.braille-stream.inverse{background:var(--surface-inverse);color:var(--text-inverse)}
-.braille-cells-row{display:flex;gap:var(--cell-gap);align-items:center}
-.braille-char-col{display:flex;flex-direction:column;align-items:center;gap:var(--space-2)}
-.braille-char-label{
-  font:var(--type-data);font-size:var(--text-2xs);opacity:.6;text-transform:uppercase;
-}
-.braille-context{
-  font:var(--type-data);font-size:var(--text-xs);
-  letter-spacing:var(--tracking-mono);opacity:.75;word-break:break-all;
-}
-.braille-context .active-word{color:var(--text-accent);font-weight:700}
-
-/* Device status chip */
-.device-status{
-  display:inline-flex;align-items:center;gap:var(--space-3);
-  padding:8px 16px 8px 10px;border-radius:var(--radius-pill);
-}
-.device-status .status-icon{
-  display:grid;place-items:center;width:30px;height:30px;
-  border-radius:var(--radius-pill);background:var(--paper-0);flex:0 0 auto;
-}
-.device-status-connected{background:var(--honeydew-100);border:1px solid var(--honeydew-300)}
-.device-status-connected .status-icon .icon{color:var(--honeydew-700)}
-.device-status-pairing{background:var(--vanila-100);border:1px solid var(--vanila-300)}
-.device-status-pairing .status-icon .icon{color:var(--vanila-700)}
-.device-status-offline{background:var(--paper-100);border:1px solid var(--ink-200)}
-.device-status-offline .status-icon .icon{color:var(--ink-500)}
-
-/* Stat tile */
-.stat-tile{
-  display:flex;flex-direction:column;gap:var(--space-2);
-  padding:var(--card-pad);border-radius:var(--radius-card);box-shadow:var(--shadow-sm);
-}
-.stat-tile .stat-label{
-  display:flex;align-items:center;gap:var(--space-2);
-  font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);
-  color:var(--ink-600);
-}
-.stat-tile .stat-label .icon{font-size:16px}
-.stat-tile .stat-value{
-  display:flex;align-items:baseline;gap:6px;
-}
-.stat-tile .stat-value .number{
-  font:var(--type-numeral);font-size:var(--text-3xl);letter-spacing:var(--tracking-display);
-}
-.stat-tile .stat-value .unit{font:var(--type-label);color:var(--ink-600)}
-.stat-tile .stat-delta{font:var(--type-caption);font-family:var(--font-mono)}
-.stat-tile-paper{background:var(--surface-card);border:1px solid var(--border-subtle)}
-.stat-tile-highlight{background:var(--vanila-200);border:1px solid var(--vanila-300)}
-.stat-tile-data{background:var(--alice-200);border:1px solid var(--alice-300)}
-.stat-tile-device{background:var(--honeydew-200);border:1px solid var(--honeydew-300)}
-.stat-tile-inverse{background:var(--surface-inverse);color:var(--text-inverse);border:1px solid var(--border-inverse)}
-.stat-tile-inverse .stat-label{color:rgba(255,255,255,.72)}
-.stat-tile-inverse .stat-value .unit{color:rgba(255,255,255,.72)}
-
-/* Progress bar */
-.progress-bar{display:flex;flex-direction:column;gap:var(--space-2)}
-.progress-bar .progress-labels{
-  display:flex;justify-content:space-between;
-  font:var(--type-caption);color:var(--text-secondary);
-}
-.progress-bar .progress-labels .value{font-family:var(--font-mono);color:var(--text-body)}
-.progress-track{
-  height:10px;border-radius:var(--radius-pill);background:var(--ink-100);overflow:hidden;
-}
-.progress-fill{
-  height:100%;border-radius:var(--radius-pill);
-  transition:width var(--dur-slow) var(--ease-emphasized);
-}
-.progress-fill-accent{background:var(--vanila-300)}
-.progress-fill-device{background:var(--honeydew-300)}
-.progress-fill-audio{background:var(--alice-300)}
-.progress-fill-ink{background:var(--surface-inverse)}
-
-/* List row */
-.list-row{
-  display:flex;align-items:center;gap:var(--space-4);
-  min-height:var(--tap-comfortable);
-  padding:var(--space-3) var(--space-4);
-  border-radius:var(--radius-md);
-  border-bottom:1px solid var(--border-subtle);
-}
-.list-row:last-child{border-bottom:none}
-.list-row.interactive{cursor:pointer}
-.list-row.interactive:hover{background:var(--state-hover-ink)}
-.list-row .row-content{flex:1;min-width:0}
-.list-row .row-title{
-  font:var(--type-body-strong);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.list-row .row-subtitle{font:var(--type-caption);color:var(--text-secondary)}
-.list-row .row-meta{font:var(--type-data);color:var(--text-secondary)}
-
-/* Switch */
-.switch-row{
-  display:flex;align-items:center;gap:var(--space-4);
-  min-height:var(--tap-min);cursor:pointer;
-}
-.switch-row .switch-label{flex:1}
-.switch-row .switch-label .label-text{display:block;font:var(--type-body-strong)}
-.switch-row .switch-label .label-hint{display:block;font:var(--type-caption);color:var(--text-secondary)}
-.switch-track{
-  position:relative;width:60px;height:34px;flex:0 0 auto;
-  border-radius:var(--radius-pill);
-  transition:background var(--dur-base) var(--ease-standard);
-  cursor:pointer;
-}
-.switch-track.off{background:var(--ink-200)}
-.switch-track.on{background:var(--surface-inverse)}
-.switch-thumb{
-  position:absolute;top:4px;width:26px;height:26px;border-radius:50%;
-  background:var(--paper-0);box-shadow:var(--shadow-sm);
-  transition:left var(--dur-base) var(--ease-emphasized);
-}
-.switch-track.off .switch-thumb{left:4px}
-.switch-track.on .switch-thumb{left:30px}
-
-/* Segmented toggle */
-.segmented{
-  display:inline-flex;padding:4px;gap:4px;
-  border-radius:var(--radius-pill);background:var(--surface-muted);
-}
-.segmented.inverse{background:rgba(255,255,255,.1)}
-.segmented .seg-btn{
-  display:inline-flex;align-items:center;gap:var(--space-2);
-  min-height:var(--tap-min);padding:0 20px;
-  border-radius:var(--radius-pill);border:none;cursor:pointer;
-  font:var(--type-label);letter-spacing:var(--tracking-tight);
-  background:transparent;color:var(--text-secondary);
-  transition:background var(--dur-base) var(--ease-standard),color var(--dur-base) var(--ease-standard);
-}
-.segmented .seg-btn.active{background:var(--surface-inverse);color:var(--text-inverse)}
-.segmented.inverse .seg-btn{color:rgba(255,255,255,.5)}
-.segmented.inverse .seg-btn.active{background:var(--paper-0);color:var(--ink-900)}
-.segmented .seg-btn .icon{font-size:18px}
-
-/* Pad navigator */
-.pad-nav{display:flex;align-items:center;gap:var(--space-3)}
-.pad-nav .nav-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:var(--tap-comfortable);height:var(--tap-comfortable);
-  border-radius:var(--radius-pill);cursor:pointer;
-}
-.pad-nav .nav-btn-secondary{
-  background:var(--surface-card);color:var(--text-body);border:2px solid var(--border-strong);
-}
-.pad-nav .nav-btn-inverse{
-  background:rgba(255,255,255,.12);color:var(--paper-0);border:2px solid rgba(255,255,255,.24);
-}
-.pad-nav .nav-btn-primary{
-  background:var(--surface-accent);color:var(--text-inverse);border:2px solid transparent;width:88px;
-}
-.pad-nav .nav-btn-primary-inverse{
-  background:var(--paper-0);color:var(--ink-900);border:2px solid transparent;width:88px;
-}
-.pad-nav .nav-btn .icon{font-size:30px}
-.pad-nav .nav-counter{
-  margin-left:var(--space-2);font:var(--type-data);color:var(--text-secondary);
-}
-
-/* Speed slider */
-.speed-slider{display:flex;flex-direction:column;gap:var(--space-2)}
-.speed-slider .slider-labels{
-  display:flex;justify-content:space-between;font:var(--type-label);
-}
-.speed-slider .slider-value{font-family:var(--font-mono);color:var(--text-accent)}
-.speed-slider input[type="range"]{
-  -webkit-appearance:none;appearance:none;width:100%;height:var(--tap-min);
-  background:transparent;cursor:pointer;
-}
-.speed-slider input[type="range"]::-webkit-slider-runnable-track{
-  height:6px;border-radius:3px;background:var(--ink-100);
-}
-.speed-slider input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
-  background:var(--surface-inverse);margin-top:-9px;box-shadow:var(--shadow-sm);
-}
-
-/* Bottom nav */
-.bottom-nav{
-  position:absolute;bottom:0;left:0;right:0;
-  height:80px;
-  background:var(--surface-card);
-  border-top:1px solid var(--border-subtle);
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 8px;
-  border-radius:0 0 40px 40px;
-  z-index:4;
-}
-.bottom-nav .nav-item{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  min-width:64px;padding:8px;cursor:pointer;
-  color:var(--text-secondary);
-  transition:color var(--dur-fast) var(--ease-standard);
-}
-.bottom-nav .nav-item.active{color:var(--ink-900)}
-.bottom-nav .nav-item .icon{font-size:24px}
-.bottom-nav .nav-item span:last-child{
-  font:var(--type-overline);text-transform:none;letter-spacing:0;
-}
-
-/* OCR Block card */
-.block-card{
-  background:var(--surface-card);border-radius:var(--radius-card);
-  padding:var(--card-pad-tight);
-  border:1px solid var(--border-subtle);box-shadow:var(--shadow-sm);
-  display:flex;flex-direction:column;gap:var(--space-2);
-  transition:border-color var(--dur-fast) var(--ease-standard);
-}
-.block-card.selected{border:2px solid var(--border-accent);box-shadow:var(--shadow-md)}
-.block-card .block-meta{
-  display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;
-}
-.block-card .block-id{
-  margin-left:auto;font:var(--type-caption);font-family:var(--font-mono);color:var(--text-muted);
-}
-.block-card .block-text{margin:0;font:var(--type-body)}
-.block-card .block-text.title-text{font-weight:700;font-size:var(--text-lg)}
-.block-card .block-text.heading-text{font-weight:700}
-.block-card .confidence-bar{
-  display:flex;align-items:center;gap:var(--space-2);
-  font:var(--type-caption);font-family:var(--font-mono);color:var(--text-secondary);
-}
-.block-card .confidence-track{
-  flex:1;height:4px;border-radius:2px;background:var(--ink-100);overflow:hidden;
-}
-.block-card .confidence-fill{height:100%;border-radius:2px}
-
-/* Role badge */
-.role-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);
-  padding:3px 9px;border-radius:var(--radius-xs);border:1.5px solid currentColor;
-}
-.role-badge .role-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-
-/* Timing HUD */
-.timing-hud{
-  display:flex;align-items:center;gap:var(--space-4);
-  padding:10px var(--space-4);border-radius:var(--radius-pill);
-  font:var(--type-data);font-size:var(--text-2xs);letter-spacing:var(--tracking-mono);
-  background:var(--surface-glass);color:var(--text-inverse);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.timing-hud .total{font:var(--type-label);font-family:var(--font-mono);color:var(--honeydew-200)}
-.timing-hud .stages{display:flex;gap:var(--space-3);opacity:.8;flex-wrap:wrap}
-
-/* Capture failure */
-.capture-failure{
-  display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-4);
-  padding:var(--space-6);border-radius:var(--radius-card);
-  background:var(--surface-card);border:2px solid var(--alert-300);box-shadow:var(--shadow-sm);
-}
-.capture-failure .fail-content{display:flex;align-items:center;gap:var(--space-4)}
-.capture-failure .fail-icon{
-  display:grid;place-items:center;width:56px;height:56px;
-  border-radius:var(--radius-pill);background:var(--alert-100);flex:0 0 auto;
-}
-.capture-failure .fail-icon .icon{font-size:30px;color:var(--alert-600)}
-.capture-failure h3{font:var(--type-heading);margin:0;color:var(--ink-900)}
-.capture-failure p{font:var(--type-body);margin:4px 0 0;color:var(--ink-700)}
-
-/* ===================================================================
-   ONBOARDING SCREEN
-   =================================================================== */
-.onboard-screen .screen{background:var(--paper-0)}
-.onboard-content{
-  display:flex;flex-direction:column;
-  height:100%;padding:60px var(--gutter-phone) 40px;
-}
-.onboard-illustration{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:24px;
-}
-.braille-hero{
-  display:flex;gap:20px;align-items:center;
-}
-.braille-hero .braille-cell.lg .braille-dot{width:16px;height:16px}
-.onboard-bottom{
-  display:flex;flex-direction:column;gap:20px;
-}
-.onboard-bottom h1{
-  font:var(--type-display);letter-spacing:-0.04em;
-  font-size:40px;line-height:1.05;
-}
-.onboard-bottom .subtitle{
-  font:var(--type-body-lg);color:var(--text-secondary);
-}
-.onboard-dots{display:flex;align-items:center;gap:8px}
-.onboard-dots .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-200);transition:all var(--dur-base) var(--ease-standard)}
-.onboard-dots .dot.active{width:24px;border-radius:4px;background:var(--ink-900)}
-.onboard-footer{
-  display:flex;align-items:center;justify-content:space-between;
-}
-.onboard-next{
-  width:56px;height:56px;border-radius:var(--radius-pill);
-  background:var(--surface-inverse);color:var(--text-inverse);
-  border:none;cursor:pointer;display:grid;place-items:center;
-  transition:transform var(--dur-fast) var(--ease-standard);
-}
-.onboard-next:hover{transform:scale(1.05)}
-
-/* ===================================================================
-   CAMERA SCREEN STYLES
-   =================================================================== */
-.camera-bg{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 100%);
-}
-.camera-overlay{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-.camera-viewfinder{
-  flex:1;display:flex;align-items:center;justify-content:center;position:relative;
-}
-.viewfinder-frame{
-  width:280px;height:380px;position:relative;
-}
-.viewfinder-corner{
-  position:absolute;width:28px;height:28px;
-  border-color:var(--paper-0);border-style:solid;border-width:0;
-}
-.viewfinder-corner.tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-radius:4px 0 0 0}
-.viewfinder-corner.tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-radius:0 4px 0 0}
-.viewfinder-corner.bl{bottom:0;left:0;border-bottom-width:3px;border-left-width:3px;border-radius:0 0 0 4px}
-.viewfinder-corner.br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-radius:0 0 4px 0}
-.viewfinder-hint{
-  position:absolute;bottom:-40px;left:0;right:0;text-align:center;
-  font:var(--type-caption);color:rgba(255,255,255,.6);
-}
-.camera-controls{
-  padding:24px;display:flex;align-items:center;justify-content:center;gap:24px;
-}
-.shutter{
-  width:72px;height:72px;border-radius:50%;
-  border:4px solid var(--paper-0);background:transparent;
-  cursor:pointer;position:relative;
-  transition:transform var(--dur-fast) var(--ease-standard);
-}
-.shutter:hover{transform:scale(1.05)}
-.shutter::after{
-  content:'';position:absolute;inset:4px;border-radius:50%;background:var(--paper-0);
-}
-.camera-side-btn{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:rgba(255,255,255,.8);cursor:pointer;background:none;border:none;
-}
-.camera-side-btn .icon{font-size:24px}
-.camera-side-btn span:last-child{font:var(--type-overline);font-size:10px}
-
-/* Scan line animation */
-@keyframes scanline{
-  0%{top:40px;opacity:0}
-  10%{opacity:1}
-  90%{opacity:1}
-  100%{top:calc(100% - 40px);opacity:0}
-}
-.scan-line{
-  position:absolute;left:20px;right:20px;height:2px;
-  background:linear-gradient(90deg,transparent,var(--honeydew-300),var(--honeydew-300),transparent);
-  box-shadow:0 0 12px var(--honeydew-300);
-  animation:scanline 2.5s var(--ease-standard) infinite;
-}
-
-/* ===================================================================
-   PROCESSING SCREEN
-   =================================================================== */
-@keyframes pulse-dot{
-  0%,100%{transform:scale(1);opacity:1}
-  50%{transform:scale(1.15);opacity:.7}
-}
-.processing-screen{
-  height:100%;background:var(--ink-900);color:var(--paper-0);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:var(--space-8);padding:var(--gutter-phone);
-}
-.processing-screen .ocr-cells{display:flex;gap:var(--cell-gap)}
-.processing-screen .step-list{width:100%;display:flex;flex-direction:column;gap:var(--space-3)}
-.processing-step{
-  display:flex;align-items:center;gap:var(--space-3);
-  transition:opacity var(--dur-base) var(--ease-standard);
-}
-.processing-step .icon{font-size:20px}
-
-/* ===================================================================
-   READING SCREEN (Braille Stream)
-   =================================================================== */
-.reading-screen{
-  height:100%;background:var(--ink-900);color:var(--paper-0);
-  display:flex;flex-direction:column;
-}
-.reading-header{
-  display:flex;align-items:center;gap:var(--space-3);
-  padding:var(--space-4) var(--gutter-phone);
-}
-.reading-body{
-  padding:0 var(--gutter-phone);
-  display:flex;flex-direction:column;gap:var(--space-5);flex:1;
-}
-.reading-controls{
-  padding:var(--gutter-phone);
-  display:flex;flex-direction:column;gap:var(--space-5);
-  background:var(--ink-800);
-  border-top-left-radius:var(--radius-sheet);
-  border-top-right-radius:var(--radius-sheet);
-}
-.word-highlight{
-  padding:1px 4px;border-radius:4px;
-  transition:all var(--dur-fast) var(--ease-standard);
-}
-
-/* ===================================================================
-   ANSWER SCREEN
-   =================================================================== */
-.answer-screen{
-  height:100%;background:var(--surface-page);display:flex;flex-direction:column;
-}
-.waveform{
-  display:flex;align-items:center;gap:2px;height:48px;
-}
-.waveform .bar{
-  flex:1;border-radius:2px;
-  transition:height var(--dur-fast) var(--ease-standard);
-}
-
-/* ===================================================================
-   BAR CHART (Dashboard)
-   =================================================================== */
-.bar-chart{
-  display:flex;align-items:flex-end;gap:8px;
-  height:140px;padding-top:8px;
-}
-.bar-col{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-.bar-chart .bar{
-  width:100%;border-radius:6px 6px 0 0;
-  background:var(--alice-300);
-  transition:height var(--dur-slow) var(--ease-emphasized);
-}
-.bar-label{
-  font:var(--type-overline);color:var(--text-secondary);text-transform:uppercase;
-}
-
-/* ===================================================================
-   LABEL + NAV PILL
-   =================================================================== */
-.nav-pill{
-  display:flex;align-items:center;gap:var(--space-2);
-  padding:10px 20px;
-  border-radius:var(--radius-pill);
-  background:var(--surface-inverse);
-  color:var(--text-inverse);
-}
-.nav-pill .icon{font-size:20px}
-.nav-pill span{font:var(--type-label)}
-
-/* Attention item */
-.attention-item{
-  display:flex;align-items:center;gap:var(--space-3);
-  padding:var(--space-3) 0;
-}
-.attention-dot{
-  width:12px;height:12px;border-radius:50%;flex:0 0 auto;
-}
-.attention-item .att-content{flex:1}
-.attention-item .att-title{font:var(--type-body-strong)}
-.attention-item .att-subtitle{font:var(--type-caption);color:var(--text-secondary)}
-
-/* Responsive */
-@media(max-width:900px){
-  .stage{flex-direction:column;align-items:center}
-  .phone-frame{transform:scale(0.85);transform-origin:top center}
-}
-@media(max-width:500px){
-  .phone-frame{transform:scale(0.7);transform-origin:top center}
-  body{padding:20px 0}
-}
-
-/* Floating label */
-.screen-label{
-  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);z-index:5;
-  background:var(--surface-inverse);color:var(--text-inverse);
-  padding:8px 20px;border-radius:var(--radius-pill);
-  font:var(--type-label);white-space:nowrap;
-  box-shadow:var(--shadow-md);
-}
-
-/* OCR detected text boxes (for camera screen) */
-.ocr-box{
-  position:absolute;border:2px solid var(--honeydew-300);border-radius:4px;
-  background:rgba(207,222,202,0.15);
-}
-.ocr-label{
-  position:absolute;top:-20px;left:0;
-  background:var(--honeydew-300);color:var(--ink-900);
-  font:var(--type-overline);padding:2px 8px;border-radius:3px;
-  white-space:nowrap;font-size:9px;
-}
-
-/* Scan result text recognized */
-.recognized-text{
-  padding:var(--space-4);border-radius:var(--radius-md);
-  background:var(--paper-0);border:1px solid var(--border-subtle);
-}
-.recognized-label{
-  font:var(--type-overline);text-transform:uppercase;
-  letter-spacing:var(--tracking-caps);color:var(--text-secondary);
-  margin-bottom:var(--space-2);
-}
-.recognized-body{font:var(--type-body)}
-
-/* Audio player row */
-.audio-row{
-  display:flex;align-items:center;gap:var(--space-4);
-  padding:var(--space-4);border-radius:var(--radius-card);
-  background:var(--channel-audio-bg);border:1px solid var(--alice-300);
-}
-.audio-row .play-btn{
-  width:48px;height:48px;border-radius:50%;
-  background:var(--surface-inverse);color:var(--text-inverse);
-  display:grid;place-items:center;border:none;cursor:pointer;flex:0 0 auto;
-}
-.audio-row .audio-info{flex:1}
-.audio-row .audio-title{font:var(--type-body-strong)}
-.audio-row .audio-subtitle{font:var(--type-caption);color:var(--alice-700)}
-
-/* ===================================================================
-   ENTRANCE ANIMATIONS (stagger on load)
-   =================================================================== */
-@keyframes fadeInUp{
-  from{opacity:0;transform:translateY(24px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.phone-frame{
-  animation:fadeInUp 0.6s var(--ease-emphasized) both;
-}
-.stage:nth-child(2) .phone-frame:nth-child(1){animation-delay:0s}
-.stage:nth-child(2) .phone-frame:nth-child(2){animation-delay:0.1s}
-.stage:nth-child(3) .phone-frame:nth-child(1){animation-delay:0.15s}
-.stage:nth-child(3) .phone-frame:nth-child(2){animation-delay:0.25s}
-.stage:nth-child(4) .phone-frame:nth-child(1){animation-delay:0.3s}
-.stage:nth-child(4) .phone-frame:nth-child(2){animation-delay:0.4s}
-.stage:nth-child(5) .phone-frame:nth-child(1){animation-delay:0.45s}
-.stage:nth-child(5) .phone-frame:nth-child(2){animation-delay:0.55s}
-.stage:nth-child(7) .phone-frame:nth-child(1){animation-delay:0.6s}
-.stage:nth-child(7) .phone-frame:nth-child(2){animation-delay:0.7s}
-
-/* Pulse for recording dot */
-@keyframes rec-pulse{
-  0%,100%{opacity:1}
-  50%{opacity:.3}
-}
-.rec-dot{animation:rec-pulse 1.2s ease-in-out infinite}
-
-/* Shimmer for processing */
-@keyframes shimmer{
-  0%{background-position:-200% 0}
-  100%{background-position:200% 0}
-}
-</style>
+        /* In-app language toggle */
+        .lang-pill {
+            display: inline-flex; align-items: center; gap: 0; background: var(--paper-100);
+            border-radius: 9999px; padding: 3px; margin-left: auto;
+        }
+        .lang-pill button {
+            padding: 4px 12px; border-radius: 9999px; border: none; font-family: 'Urbanist', sans-serif;
+            font-weight: 700; font-size: 11px; cursor: pointer; transition: all 0.2s;
+            background: transparent; color: var(--ink-400);
+        }
+        .lang-pill button.active { background: var(--paper-0); color: var(--ink-900); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
 
-<!-- ===================================================================
-     HEADER
-     =================================================================== -->
-<div class="stage-header">
-  <h1>BRaiLLE</h1>
-  <p>AI-powered tactile learning platform by DotCode — Samsung Solve for Tomorrow 2026</p>
-</div>
-
-<!-- ===================================================================
-     ROW 1: ONBOARDING + HOME (BERANDA)
-     =================================================================== -->
-<div class="stage">
-
-  <!-- PHONE 1: Onboarding -->
-  <div class="phone-frame onboard-screen" id="phone-onboard">
-    <div class="screen" style="background:var(--paper-0)">
-      <div class="statusbar"><span>9:41</span><span style="display:flex;gap:6px;align-items:center">◍ ▮▮▮ 100%</span></div>
-      <div class="onboard-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font:var(--type-label);letter-spacing:-0.01em">BRaiLLE</span>
-          <span style="font:var(--type-caption);color:var(--text-secondary);cursor:pointer">Lewati</span>
-        </div>
-        <div class="onboard-illustration">
-          <!-- Braille cells decorative -->
-          <div class="braille-hero">
-            <div class="braille-cell lg">
-              <span class="braille-dot raised" style="grid-column:1;grid-row:1"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:1"></span>
-              <span class="braille-dot raised" style="grid-column:1;grid-row:2"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-              <span class="braille-dot flat" style="grid-column:1;grid-row:3"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:3"></span>
-            </div>
-            <div class="braille-cell lg">
-              <span class="braille-dot raised" style="grid-column:1;grid-row:1"></span>
-              <span class="braille-dot raised" style="grid-column:2;grid-row:1"></span>
-              <span class="braille-dot raised" style="grid-column:1;grid-row:2"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-              <span class="braille-dot raised" style="grid-column:1;grid-row:3"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:3"></span>
-            </div>
-            <div class="braille-cell lg">
-              <span class="braille-dot raised" style="grid-column:1;grid-row:1"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:1"></span>
-              <span class="braille-dot flat" style="grid-column:1;grid-row:2"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-              <span class="braille-dot flat" style="grid-column:1;grid-row:3"></span>
-              <span class="braille-dot flat" style="grid-column:2;grid-row:3"></span>
-            </div>
-          </div>
-          <!-- Surrounding icons -->
-          <div style="display:flex;gap:20px;align-items:center">
-            <span class="icon" style="font-size:40px;color:var(--ink-300)">photo_camera</span>
-            <span class="icon" style="font-size:48px;color:var(--vanila-500)">touch_app</span>
-            <span class="icon" style="font-size:40px;color:var(--ink-300)">volume_up</span>
-          </div>
-          <p style="font:var(--type-caption);color:var(--text-secondary);text-align:center;max-width:240px">
-            Pindai lembar kerja, rasakan braille di bawah jari, dengarkan audio
-          </p>
-        </div>
-        <div class="onboard-bottom">
-          <h1>Baca Materi<br>Secara Mandiri</h1>
-          <div class="onboard-footer">
-            <div class="onboard-dots">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot active"></div>
-            </div>
-            <button class="onboard-next" aria-label="Mulai">
-              <span class="icon" style="font-size:28px">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="screen-label">1. Onboarding</div>
+    <!-- Language Toggle (outside phone) -->
+    <div class="lang-toggle-outer">
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn active" onclick="setLang('id')">ID</button>
     </div>
-  </div>
 
-  <!-- PHONE 2: Beranda (Home) -->
-  <div class="phone-frame" id="phone-beranda">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 100%</span></div>
-      <div class="screen-content" style="padding-top:12px">
-        <!-- Header -->
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0">BRaiLLE</h2>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Selamat datang, Adi</span>
-            </div>
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--vanila-200);display:grid;place-items:center;font:var(--type-label);font-size:14px">
-              <!-- Braille "A" as avatar -->
-              <div class="braille-cell" style="grid-template-columns:repeat(2,6px);grid-template-rows:repeat(3,6px);gap:3px">
-                <span class="braille-dot raised" style="grid-column:1;grid-row:1;width:6px;height:6px"></span>
-                <span class="braille-dot flat" style="grid-column:2;grid-row:1;width:6px;height:6px"></span>
-                <span class="braille-dot flat" style="grid-column:1;grid-row:2;width:6px;height:6px"></span>
-                <span class="braille-dot flat" style="grid-column:2;grid-row:2;width:6px;height:6px"></span>
-                <span class="braille-dot flat" style="grid-column:1;grid-row:3;width:6px;height:6px"></span>
-                <span class="braille-dot flat" style="grid-column:2;grid-row:3;width:6px;height:6px"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Scan CTA card -->
-        <div class="card card-accent" style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
-          <div style="width:64px;height:64px;border-radius:var(--radius-pill);background:var(--surface-inverse);display:grid;place-items:center">
-            <span class="icon filled" style="font-size:32px;color:var(--paper-0)">photo_camera</span>
-          </div>
-          <div>
-            <div style="font:var(--type-heading);font-weight:800;text-transform:uppercase">Pindai Materi</div>
-            <div style="font:var(--type-caption);color:var(--ink-600);margin-top:4px">Arahkan kamera ke teks</div>
-          </div>
-        </div>
-
-        <!-- Device status -->
-        <div class="device-status device-status-connected">
-          <div class="status-icon"><span class="icon filled" style="font-size:19px">bluetooth_connected</span></div>
-          <span style="font:var(--type-label)">Pad tersambung</span>
-          <span style="font:var(--type-data);font-size:var(--text-2xs);color:var(--ink-600)">16 sel · 87%</span>
-        </div>
-
-        <!-- Progress section -->
-        <div>
-          <h3 style="font:var(--type-heading);margin-bottom:var(--space-3)">Progres Hari Ini</h3>
-          <div class="card card-paper">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-              <div>
-                <div style="font:var(--type-caption);color:var(--text-secondary)">Materi dibaca</div>
-                <div style="font:var(--type-numeral);font-size:var(--text-2xl)">7 <span style="font:var(--type-label);color:var(--ink-600)">dokumen</span></div>
-              </div>
-              <span class="badge badge-ok"><span class="icon" style="font-size:12px">trending_up</span> +18 mnt</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-track"><div class="progress-fill progress-fill-accent" style="width:70%"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent reads -->
-        <div>
-          <h3 style="font:var(--type-heading);margin-bottom:var(--space-3)">Terakhir Dibaca</h3>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--vanila-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--vanila-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Soal Matematika Bab 3</div>
-              <div class="row-subtitle">Hari ini, 08:15</div>
-            </div>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--alice-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--alice-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Teks Bahasa Indonesia</div>
-              <div class="row-subtitle">Kemarin, 13:02</div>
-            </div>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--honeydew-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--honeydew-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">IPA — Ekosistem</div>
-              <div class="row-subtitle">2 hari lalu, 10:30</div>
-            </div>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bottom Navigation -->
-      <div class="bottom-nav">
-        <div class="nav-item active">
-          <span class="icon filled">home</span>
-          <span>Beranda</span>
-        </div>
-        <div class="nav-item">
-          <span class="icon">photo_camera</span>
-          <span>Pindai</span>
-        </div>
-        <div class="nav-item">
-          <span class="icon">history</span>
-          <span>Riwayat</span>
-        </div>
-      </div>
-      <div class="screen-label">2. Beranda</div>
+    <!-- Top Switcher Bar -->
+    <div class="switcher-bar" id="switcherBar">
+        <button class="switcher-btn active" data-i18n="sw_onboarding" onclick="navTo('onboarding')">1. Onboarding</button>
+        <button class="switcher-btn" data-i18n="sw_home" onclick="navTo('home')">2. Beranda</button>
+        <button class="switcher-btn" data-i18n="sw_scan" onclick="navTo('pindai')">3. Pindai</button>
+        <button class="switcher-btn" data-i18n="sw_process" onclick="navTo('proses')">4. Proses</button>
+        <button class="switcher-btn" data-i18n="sw_result" onclick="navTo('hasil')">5. Hasil</button>
+        <button class="switcher-btn" data-i18n="sw_read" onclick="navTo('baca')">6. Baca</button>
+        <button class="switcher-btn" data-i18n="sw_voice" onclick="navTo('suara')">7. Suara</button>
+        <button class="switcher-btn" data-i18n="sw_history" onclick="navTo('riwayat')">8. Riwayat</button>
+        <button class="switcher-btn" data-i18n="sw_teacher" onclick="navTo('guru')">9. Guru</button>
+        <button class="switcher-btn" data-i18n="sw_settings" onclick="navTo('pengaturan')">10. Pengaturan</button>
+        <button class="switcher-btn" data-i18n="sw_connect" onclick="navTo('connect')">11. Koneksi</button>
     </div>
-  </div>
-</div>
 
-<!-- ===================================================================
-     ROW 2: PINDAI (OCR Camera) + PROSES OCR (Processing)
-     =================================================================== -->
-<div class="stage">
+    <!-- Phone Frame -->
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="screen-container">
 
-  <!-- PHONE 3: Pindai (Camera/OCR) -->
-  <div class="phone-frame" id="phone-pindai">
-    <div class="screen" style="background:#0a0a0f">
-      <div class="camera-bg"></div>
-      <div class="camera-overlay">
-        <div class="statusbar dark">
-          <span>9:41</span>
-          <span>◍ ▮▮▮ 82%</span>
-        </div>
-        <div style="padding:0 20px;margin-top:8px">
-          <h3 style="font:var(--type-heading);color:var(--paper-0);text-align:center">Pindai Materi</h3>
-        </div>
-
-        <div class="camera-viewfinder">
-          <div class="viewfinder-frame">
-            <div class="viewfinder-corner tl"></div>
-            <div class="viewfinder-corner tr"></div>
-            <div class="viewfinder-corner bl"></div>
-            <div class="viewfinder-corner br"></div>
-
-            <!-- Animated scan line -->
-            <div class="scan-line"></div>
-
-            <!-- Simulated OCR detection -->
-            <div class="ocr-box" style="top:60px;left:20px;right:20px;height:28px">
-              <div class="ocr-label">Teks terdeteksi</div>
-            </div>
-            <div class="ocr-box" style="top:100px;left:20px;right:40px;height:24px"></div>
-            <div class="ocr-box" style="top:136px;left:20px;right:60px;height:24px"></div>
-            <div class="ocr-box" style="top:172px;left:20px;right:80px;height:24px"></div>
-
-            <div class="viewfinder-hint">Letakkan dokumen rata &amp; terang</div>
-          </div>
-        </div>
-
-        <!-- Timing HUD -->
-        <div style="padding:0 20px;margin-bottom:12px">
-          <div class="timing-hud">
-            <strong class="total">712 ms</strong>
-            <span class="stages">
-              <span>decode 89</span>
-              <span>praproses 156</span>
-              <span>kenali 384</span>
-              <span>struktur 83</span>
-            </span>
-          </div>
-        </div>
-
-        <div class="camera-controls">
-          <button class="camera-side-btn">
-            <span class="icon">image</span>
-            <span>Galeri</span>
-          </button>
-          <button class="shutter" aria-label="Ambil Foto"></button>
-          <button class="camera-side-btn">
-            <span class="icon">flash_on</span>
-            <span>Flash</span>
-          </button>
-        </div>
-      </div>
-      <div class="screen-label" style="bottom:12px">3. Pindai (OCR)</div>
-    </div>
-  </div>
-
-  <!-- PHONE 4: Processing (Proses OCR) -->
-  <div class="phone-frame" id="phone-processing">
-    <div class="screen" style="background:var(--ink-900)">
-      <div class="statusbar dark"><span>9:41</span><span>◍ ▮▮▮ 81%</span></div>
-      <div class="processing-screen">
-        <!-- OCR braille cells -->
-        <div class="ocr-cells" id="ocr-loading-cells"></div>
-
-        <!-- Processing steps -->
-        <div class="step-list">
-          <div class="processing-step" data-step="0">
-            <span class="icon filled" style="color:var(--honeydew-200)">check_circle</span>
-            <span style="font:var(--type-body)">Membaca gambar</span>
-          </div>
-          <div class="processing-step" data-step="1">
-            <span class="icon filled" style="color:var(--honeydew-200)">check_circle</span>
-            <span style="font:var(--type-body)">Memeriksa ketajaman</span>
-          </div>
-          <div class="processing-step" data-step="2" style="opacity:1">
-            <span class="icon" style="color:rgba(255,255,255,.5)">radio_button_unchecked</span>
-            <span style="font:var(--type-body)">Mengenali teks</span>
-          </div>
-          <div class="processing-step" data-step="3" style="opacity:.34">
-            <span class="icon" style="color:rgba(255,255,255,.5)">radio_button_unchecked</span>
-            <span style="font:var(--type-body)">Menyusun struktur</span>
-          </div>
-        </div>
-
-        <!-- Timing -->
-        <div class="timing-hud" style="align-self:stretch">
-          <strong class="total">238 ms</strong>
-          <span class="stages">
-            <span>decode 41</span>
-            <span>praproses 78</span>
-            <span>kenali …</span>
-          </span>
-        </div>
-      </div>
-      <div class="screen-label" style="bottom:12px">4. Proses OCR</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================================================================
-     ROW 3: HASIL KONVERSI (Result) + READING SCREEN (Braille Stream)
-     =================================================================== -->
-<div class="stage">
-
-  <!-- PHONE 5: Hasil Konversi (Result + Braille Output) -->
-  <div class="phone-frame" id="phone-hasil">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 78%</span></div>
-      <div class="screen-content" style="padding-top:8px">
-        <!-- Header -->
-        <div>
-          <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0">Hasil Konversi</h2>
-          <span style="font:var(--type-caption);color:var(--text-secondary)">Soal Matematika Bab 3</span>
-        </div>
-
-        <!-- Recognized text -->
-        <div class="recognized-text">
-          <div class="recognized-label">Teks Terbaca</div>
-          <p class="recognized-body">Hitunglah luas segitiga dengan alas 12 cm dan tinggi 8 cm.</p>
-        </div>
-
-        <!-- Braille output section -->
-        <div>
-          <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3)">
-            <span class="badge badge-tactile"><span class="icon" style="font-size:12px">touch_app</span> Braille</span>
-            <span style="font:var(--type-data);font-size:var(--text-2xs);color:var(--text-secondary)">kata 1 dari 9</span>
-          </div>
-          <div class="card card-outline" style="padding:20px">
-            <div style="text-align:center;font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:12px">
-              Output Braille (mengalir)
-            </div>
-            <div class="braille-cells-row" style="justify-content:center">
-              <!-- H -->
-              <div class="braille-char-col">
-                <div class="braille-cell lg">
-                  <span class="braille-dot active" style="grid-column:1;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:2"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:3"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:3"></span>
+            <!-- ==================== 1. ONBOARDING ==================== -->
+            <div id="onboarding" class="screen active">
+                <div class="screen-content">
+                    <div class="onboarding-hero">
+                        <div class="braille-illustration">
+                            <div class="braille-dot active"></div><div class="braille-dot"></div>
+                            <div class="braille-dot active"></div><div class="braille-dot"></div>
+                            <div class="braille-dot"></div><div class="braille-dot"></div>
+                        </div>
+                        <h1 data-i18n="onboard_title">Belajar Braille<br>Lebih Mudah</h1>
+                        <p style="margin-top: 16px;" data-i18n="onboard_subtitle">Baca Teks Materi Secara Mandiri</p>
+                    </div>
+                    <div style="display: flex; gap: 16px; flex-direction: column;">
+                        <button class="btn btn-primary" onclick="navTo('home')" data-i18n="onboard_btn">Mulai Sekarang</button>
+                    </div>
                 </div>
-                <span class="braille-char-label">H</span>
-              </div>
-              <!-- I -->
-              <div class="braille-char-col">
-                <div class="braille-cell lg">
-                  <span class="braille-dot flat" style="grid-column:1;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:2"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-                  <span class="braille-dot flat" style="grid-column:1;grid-row:3"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:3"></span>
+            </div>
+
+            <!-- ==================== 2. HOME ==================== -->
+            <div id="home" class="screen">
+                <div class="screen-content with-nav">
+                    <div class="home-header">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="logo.png" alt="DotCode Logo" class="home-logo">
+                            <div>
+                                <h1 style="font-size: 24px;">BRaiLLE</h1>
+                                <p style="font-size: 12px; margin: 0;" data-i18n="home_by">oleh DotCode_</p>
+                            </div>
+                        </div>
+                        <div class="lang-pill">
+                            <button class="active" onclick="setLang('id')">ID</button>
+                            <button onclick="setLang('en')">EN</button>
+                        </div>
+                    </div>
+
+                    <!-- Device Status -->
+                    <div class="device-status" onclick="navTo('connect')" style="cursor: pointer;">
+                        <div class="status-dot"></div>
+                        <span data-i18n="home_device">Alat Terhubung</span>
+                        <span class="icon" style="font-size: 16px; margin-left: auto; color: var(--ink-300);">chevron_right</span>
+                    </div>
+
+                    <!-- Scan CTA -->
+                    <div class="card" style="background: var(--grad-dark); color: white;">
+                        <h2 style="font-size: 20px; margin-bottom: 8px;" data-i18n="home_scan_title">Pindai Materi Baru</h2>
+                        <p style="color: var(--ink-200); margin-bottom: 20px;" data-i18n="home_scan_desc">Arahkan kamera ke teks untuk mengubahnya menjadi braille.</p>
+                        <button class="btn btn-primary" onclick="navTo('pindai')">
+                            <span class="icon">document_scanner</span> <span data-i18n="home_scan_btn">Pindai Sekarang</span>
+                        </button>
+                    </div>
+
+                    <!-- Stats -->
+                    <div style="display: flex; gap: 16px;">
+                        <div class="card" style="flex: 1;">
+                            <div style="font-size: 32px; font-weight: 800;">12</div>
+                            <p style="font-size: 14px;" data-i18n="home_stat_read">Materi Dibaca</p>
+                        </div>
+                        <div class="card" style="flex: 1;">
+                            <div style="font-size: 32px; font-weight: 800;">85%</div>
+                            <p style="font-size: 14px;" data-i18n="home_stat_acc">Akurasi Jawaban</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent -->
+                    <h3 style="margin-top: 8px; font-size: 18px;" data-i18n="home_recent">Terakhir Dibaca</h3>
+                    <div class="card" style="display: flex; align-items: center; gap: 16px; padding: 16px; cursor: pointer;" onclick="navTo('hasil')">
+                        <div style="width: 48px; height: 48px; background: var(--alice-100); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--alice-700);">
+                            <span class="icon">menu_book</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 16px; font-weight: 700;">Biologi Bab 3</h4>
+                            <p style="font-size: 14px; margin: 0;" data-i18n="home_recent_time">Kemarin, 14:30</p>
+                        </div>
+                        <span class="icon" style="color: var(--ink-300);">chevron_right</span>
+                    </div>
                 </div>
-                <span class="braille-char-label">I</span>
-              </div>
-              <!-- T -->
-              <div class="braille-char-col">
-                <div class="braille-cell lg">
-                  <span class="braille-dot flat" style="grid-column:1;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:1"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:2"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:2"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:3"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:3"></span>
+            </div>
+
+            <!-- ==================== 3. PINDAI (Camera) ==================== -->
+            <div id="pindai" class="screen screen-dark" style="padding: 0;">
+                <div class="camera-view">
+                    <div style="padding: 56px 24px 24px 24px; display: flex; justify-content: space-between; position: relative; z-index: 10;">
+                        <button class="icon-btn" onclick="navTo('home')"><span class="icon">close</span></button>
+                        <button class="icon-btn"><span class="icon">flash_on</span></button>
+                    </div>
+                    <div class="viewfinder">
+                        <div class="viewfinder-inner"></div>
+                        <div class="scan-line"></div>
+                    </div>
+                    <div style="position: absolute; bottom: 140px; width: 100%; text-align: center;">
+                        <p style="color: white; font-weight: 600;" data-i18n="scan_hint">Posisikan teks di dalam bingkai</p>
+                    </div>
+                    <div class="camera-controls">
+                        <div style="width: 48px;"></div>
+                        <button class="shutter-btn" onclick="navTo('proses')"><div class="shutter-btn-inner"></div></button>
+                        <div style="width: 48px;"></div>
+                    </div>
                 </div>
-                <span class="braille-char-label">T</span>
-              </div>
-              <!-- U -->
-              <div class="braille-char-col">
-                <div class="braille-cell lg">
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:1"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:1"></span>
-                  <span class="braille-dot flat" style="grid-column:1;grid-row:2"></span>
-                  <span class="braille-dot flat" style="grid-column:2;grid-row:2"></span>
-                  <span class="braille-dot raised" style="grid-column:1;grid-row:3"></span>
-                  <span class="braille-dot raised" style="grid-column:2;grid-row:3"></span>
+            </div>
+
+            <!-- ==================== 4. PROSES OCR ==================== -->
+            <div id="proses" class="screen screen-dark">
+                <div class="screen-content" style="align-items: center; justify-content: center;">
+                    <div class="processing-hero">
+                        <!-- Centered braille cell with circular animation -->
+                        <div class="loading-braille-grid" id="loadingBraille">
+                            <div class="ldot" id="ld0"></div><div class="ldot" id="ld1"></div>
+                            <div class="ldot" id="ld2"></div><div class="ldot" id="ld3"></div>
+                            <div class="ldot" id="ld4"></div><div class="ldot" id="ld5"></div>
+                        </div>
+                        <h2 data-i18n="proc_title">Memproses Teks...</h2>
+                        <div class="checklist">
+                            <div class="check-item done"><span class="icon">check_circle</span><span data-i18n="proc_step1">Membaca gambar</span></div>
+                            <div class="check-item active"><span class="icon">hourglass_empty</span><span data-i18n="proc_step2">Mendeteksi teks (OCR)</span></div>
+                            <div class="check-item"><span class="icon">radio_button_unchecked</span><span data-i18n="proc_step3">Mengonversi ke Braille</span></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: auto;" onclick="navTo('hasil')" data-i18n="proc_btn">Lihat Hasil</button>
                 </div>
-                <span class="braille-char-label">U</span>
-              </div>
             </div>
-            <!-- Context -->
-            <div class="braille-context" style="margin-top:12px;text-align:center">
-              <span class="active-word">hitu</span>nglah luas segitiga dengan alas 12 cm dan tinggi 8 cm.
+
+            <!-- ==================== 5. HASIL KONVERSI (Split View Redesign) ==================== -->
+            <div id="hasil" class="screen">
+                <div class="screen-content" style="padding-bottom: 24px;">
+                    <!-- Header -->
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span class="icon" onclick="navTo('home')" style="cursor: pointer;">arrow_back</span>
+                        <h2 style="font-size: 20px;" data-i18n="result_title">Hasil Konversi</h2>
+                        <div class="tag tag-success" style="margin-left: auto;" data-i18n="result_ready">Siap</div>
+                    </div>
+
+                    <!-- SPLIT VIEW: Original Text (Top) -->
+                    <div class="card" style="border-left: 4px solid var(--alice-500);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span class="icon" style="font-size: 20px; color: var(--alice-500);">article</span>
+                            <h3 style="font-size: 14px; color: var(--ink-500); font-weight: 700;" data-i18n="result_original">TEKS ASLI</h3>
+                        </div>
+                        <p style="font-size: 20px; font-weight: 700; color: var(--ink-900); line-height: 1.4;">Ibu pergi ke pasar membeli sayur dan buah untuk makan malam.</p>
+                        <div class="audio-player" style="margin-top: 16px;">
+                            <span class="icon" style="color: var(--ink-900); cursor: pointer;">play_arrow</span>
+                            <div class="audio-progress"><div class="audio-progress-bar"></div></div>
+                            <span style="font-size: 12px; font-weight: 600;">0:04</span>
+                        </div>
+                    </div>
+
+                    <!-- SPLIT VIEW: Braille Translation (Bottom) -->
+                    <div class="braille-output-card">
+
+                        <!-- Word: IBU -->
+                        <div>
+                            <p style="font-size: 11px; color: var(--ink-400); margin-bottom: 6px; font-weight: 600;">IBU</p>
+                            <div class="braille-word">
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">I</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">B</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                    </div>
+                                    <div class="braille-char-label">U</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Word: PERGI -->
+                        <div>
+                            <p style="font-size: 11px; color: var(--ink-400); margin-bottom: 6px; font-weight: 600;">PERGI</p>
+                            <div class="braille-word">
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">P</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">E</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">R</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">G</div>
+                                </div>
+                                <div>
+                                    <div class="braille-cell">
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small active"></div>
+                                        <div class="braille-dot-small active"></div><div class="braille-dot-small"></div>
+                                        <div class="braille-dot-small"></div><div class="braille-dot-small"></div>
+                                    </div>
+                                    <div class="braille-char-label">I</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Send to BraillePad CTA -->
+                    <button class="btn btn-primary" style="width: 100%;" onclick="navTo('connect')">
+                        <span class="icon">send</span> <span data-i18n="result_send">Kirim ke BraillePad</span>
+                    </button>
+
+                    <!-- Secondary Actions -->
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-outline" style="flex: 1;" onclick="navTo('baca')">
+                            <span class="icon">visibility</span> <span data-i18n="result_read">Mode Baca</span>
+                        </button>
+                        <button class="btn btn-dark" style="flex: 1;" onclick="navTo('suara')">
+                            <span class="icon">mic</span> <span data-i18n="result_answer">Jawab</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Audio output -->
-        <div class="audio-row">
-          <button class="play-btn"><span class="icon" style="font-size:24px">play_arrow</span></button>
-          <div class="audio-info">
-            <div class="audio-title">Putar Audio (TTS)</div>
-            <div class="audio-subtitle">Bahasa Indonesia · 1.0x</div>
-          </div>
-        </div>
+            <!-- ==================== 6. MODE BACA ==================== -->
+            <div id="baca" class="screen screen-dark">
+                <div class="screen-content" style="align-items: center; justify-content: center;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: auto;">
+                        <span class="icon" onclick="navTo('hasil')" style="cursor: pointer;">close</span>
+                        <div class="tag" style="background: var(--ink-700); color: var(--paper-0);" data-i18n="read_page">Halaman 1/1</div>
+                        <span class="icon">settings</span>
+                    </div>
 
-        <!-- Pad navigator -->
-        <div class="pad-nav" style="justify-content:center">
-          <button class="nav-btn nav-btn-secondary"><span class="icon">chevron_left</span></button>
-          <button class="nav-btn nav-btn-primary"><span class="icon">play_arrow</span> <span style="font:var(--type-label);color:inherit;margin-left:4px">Maju</span></button>
-          <button class="nav-btn nav-btn-secondary"><span class="icon">chevron_right</span></button>
-        </div>
+                    <div style="display: flex; gap: 24px; margin-bottom: 40px;">
+                        <div class="large-braille-cell">
+                            <div class="large-braille-dot active"></div><div class="large-braille-dot"></div>
+                            <div class="large-braille-dot active"></div><div class="large-braille-dot"></div>
+                            <div class="large-braille-dot active"></div><div class="large-braille-dot"></div>
+                        </div>
+                        <div class="large-braille-cell">
+                            <div class="large-braille-dot active"></div><div class="large-braille-dot"></div>
+                            <div class="large-braille-dot"></div><div class="large-braille-dot"></div>
+                            <div class="large-braille-dot active"></div><div class="large-braille-dot active"></div>
+                        </div>
+                    </div>
 
-        <!-- Speed slider -->
-        <div class="speed-slider">
-          <div class="slider-labels">
-            <span>Kecepatan refresh pin</span>
-            <span class="slider-value">60 kpm</span>
-          </div>
-          <input type="range" min="20" max="160" step="5" value="60">
+                    <div class="reading-sentence">
+                        Kamar itu sangat <span class="highlight">luas</span>.
+                    </div>
+
+                    <div class="reading-controls">
+                        <button class="btn btn-outline" data-i18n="read_prev">Mundur</button>
+                        <button class="btn btn-primary" style="background: var(--grad-accent); border: none; color: var(--ink-900);" onclick="navTo('suara')" data-i18n="read_answer">Jawab</button>
+                        <button class="btn btn-outline" data-i18n="read_next">Maju</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 7. JAWABAN SUARA (Voice — Redesigned Controls) ==================== -->
+            <div id="suara" class="screen">
+                <div class="screen-content">
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 8px;">
+                        <span class="icon" onclick="navTo('baca')" style="cursor: pointer;">arrow_back</span>
+                        <h2 style="font-size: 20px;" data-i18n="voice_title">Jawab Pertanyaan</h2>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="card" style="background: var(--alice-100); border: none; box-shadow: none;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span class="icon" style="color: var(--alice-700); font-size: 20px;">quiz</span>
+                            <h3 style="font-size: 14px; color: var(--alice-700);" data-i18n="voice_question_label">PERTANYAAN</h3>
+                        </div>
+                        <p style="font-weight: 600; color: var(--ink-900); font-size: 18px;" data-i18n="voice_question">Apa yang ibu beli di pasar?</p>
+                    </div>
+
+                    <!-- Recording Status -->
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div id="voiceStatus" class="tag tag-alert" style="animation: pulse 1s infinite alternate;">
+                            <span class="icon" style="font-size: 16px;">mic</span> <span data-i18n="voice_recording">Merekam...</span>
+                        </div>
+
+                        <!-- Waveform -->
+                        <div class="waveform-container" id="waveform">
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        </div>
+
+                        <!-- Transcript -->
+                        <div class="card card-flat" style="width: 100%; text-align: center; margin-bottom: 16px;">
+                            <p style="font-size: 13px; color: var(--ink-400); margin-bottom: 4px;" data-i18n="voice_transcript_label">Transkrip:</p>
+                            <p style="font-size: 18px; font-weight: 700; color: var(--ink-900);">"Ibu membeli sayur dan buah."</p>
+                        </div>
+
+                        <!-- Voice Control Buttons -->
+                        <div class="voice-controls">
+                            <!-- Play/Pause -->
+                            <button class="voice-btn voice-btn-play" title="Play" id="btnPlay" onclick="togglePlay()">
+                                <span class="icon" style="font-size: 28px;">play_arrow</span>
+                            </button>
+                            <!-- Record -->
+                            <button class="voice-btn voice-btn-record recording" title="Record" id="btnRecord" onclick="toggleRecord()">
+                                <span class="icon" style="font-size: 32px;">mic</span>
+                            </button>
+                            <!-- Stop -->
+                            <button class="voice-btn voice-btn-stop" title="Stop" id="btnStop" onclick="stopRecording()">
+                                <span class="icon" style="font-size: 28px;">stop</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Send to Teacher -->
+                    <button class="btn btn-primary" style="width: 100%;" onclick="navTo('home')">
+                        <span class="icon">send</span> <span data-i18n="voice_send">Kirim ke Guru</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== 8. RIWAYAT ==================== -->
+            <div id="riwayat" class="screen">
+                <div class="screen-content with-nav">
+                    <h2 style="margin-bottom: 16px;" data-i18n="history_title">Riwayat</h2>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="card" style="padding: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <h3 style="font-size: 16px;">Bahasa Indonesia</h3>
+                                <div class="tag tag-success" data-i18n="history_done">Selesai</div>
+                            </div>
+                            <p style="font-size: 14px; margin-bottom: 8px;">Bab 1: Menulis Surat</p>
+                            <p style="font-size: 12px; color: var(--ink-400);" data-i18n="history_time1">Hari ini, 09:00</p>
+                        </div>
+                        <div class="card" style="padding: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <h3 style="font-size: 16px;">Matematika</h3>
+                                <div class="tag tag-info" data-i18n="history_reviewed">Diperiksa Guru</div>
+                            </div>
+                            <p style="font-size: 14px; margin-bottom: 8px;">Latihan Penjumlahan</p>
+                            <p style="font-size: 12px; color: var(--ink-400);" data-i18n="history_time2">Kemarin, 10:15</p>
+                        </div>
+                        <div class="card" style="padding: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <h3 style="font-size: 16px;">IPA Dasar</h3>
+                                <div class="tag tag-alert" data-i18n="history_retry">Perlu Diulang</div>
+                            </div>
+                            <p style="font-size: 14px; margin-bottom: 8px;">Mengenal Hewan</p>
+                            <p style="font-size: 12px; color: var(--ink-400);">12 Sep 2023</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 9. DASHBOARD GURU (Expanded) ==================== -->
+            <div id="guru" class="screen">
+                <div class="screen-content with-nav">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <h2 data-i18n="teacher_title">Dashboard Guru</h2>
+                        <div class="tag tag-vanila" data-i18n="teacher_period">Minggu Ini</div>
+                    </div>
+
+                    <!-- Stat Grid (4 cards) -->
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--vanila-700);">4</div>
+                            <div class="stat-label" data-i18n="teacher_students">Siswa Aktif</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--honeydew-700);">27</div>
+                            <div class="stat-label" data-i18n="teacher_tasks">Tugas Selesai</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--alice-700);">82%</div>
+                            <div class="stat-label" data-i18n="teacher_accuracy">Rata-rata Akurasi</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: var(--alert-700);">3</div>
+                            <div class="stat-label" data-i18n="teacher_pending">Perlu Diperiksa</div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Activity Chart -->
+                    <div class="card">
+                        <h3 style="font-size: 16px; margin-bottom: 16px;" data-i18n="teacher_activity">Aktivitas Mingguan</h3>
+                        <div style="display: flex; align-items: flex-end; gap: 8px; height: 120px; border-bottom: 1px solid var(--paper-200); padding-bottom: 8px;">
+                            <div style="flex: 1; background: var(--vanila-200); height: 40%; border-radius: 4px 4px 0 0;"></div>
+                            <div style="flex: 1; background: var(--vanila-200); height: 65%; border-radius: 4px 4px 0 0;"></div>
+                            <div style="flex: 1; background: var(--vanila-200); height: 30%; border-radius: 4px 4px 0 0;"></div>
+                            <div style="flex: 1; background: var(--vanila-300); height: 90%; border-radius: 4px 4px 0 0;"></div>
+                            <div style="flex: 1; background: var(--vanila-200); height: 55%; border-radius: 4px 4px 0 0;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: var(--ink-400);">
+                            <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span>
+                        </div>
+                    </div>
+
+                    <!-- Student Progress List -->
+                    <div class="card">
+                        <h3 style="font-size: 16px; margin-bottom: 12px;" data-i18n="teacher_student_progress">Progres Siswa</h3>
+                        
+                        <div class="student-row">
+                            <div class="student-avatar" style="background: var(--alice-500);">A</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <span style="font-weight: 700; font-size: 14px;">Adi Nugroho</span>
+                                    <span style="font-size: 12px; color: var(--honeydew-700); font-weight: 700;">92%</span>
+                                </div>
+                                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 92%; background: var(--honeydew-300);"></div></div>
+                            </div>
+                        </div>
+                        <div class="student-row">
+                            <div class="student-avatar" style="background: var(--vanila-500);">S</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <span style="font-weight: 700; font-size: 14px;">Sari Dewi</span>
+                                    <span style="font-size: 12px; color: var(--honeydew-700); font-weight: 700;">85%</span>
+                                </div>
+                                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 85%; background: var(--vanila-300);"></div></div>
+                            </div>
+                        </div>
+                        <div class="student-row">
+                            <div class="student-avatar" style="background: var(--alert-600);">R</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <span style="font-weight: 700; font-size: 14px;">Raka Putra</span>
+                                    <span style="font-size: 12px; color: var(--vanila-700); font-weight: 700;">67%</span>
+                                </div>
+                                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 67%; background: var(--alert-300);"></div></div>
+                            </div>
+                        </div>
+                        <div class="student-row">
+                            <div class="student-avatar" style="background: var(--honeydew-500);">M</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <span style="font-weight: 700; font-size: 14px;">Maya Sari</span>
+                                    <span style="font-size: 12px; color: var(--honeydew-700); font-weight: 700;">78%</span>
+                                </div>
+                                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 78%; background: var(--honeydew-300);"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Submissions -->
+                    <div class="card">
+                        <h3 style="font-size: 16px; margin-bottom: 12px;" data-i18n="teacher_submissions">Kiriman Terbaru</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--paper-100);">
+                                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--honeydew-100); display: flex; align-items: center; justify-content: center;">
+                                    <span class="icon" style="font-size: 20px; color: var(--honeydew-700);">check_circle</span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 14px;">Adi — Matematika Bab 3</div>
+                                    <div style="font-size: 12px; color: var(--ink-400);" data-i18n="teacher_sub_time1">2 jam lalu · Akurasi 94%</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--paper-100);">
+                                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--vanila-100); display: flex; align-items: center; justify-content: center;">
+                                    <span class="icon" style="font-size: 20px; color: var(--vanila-700);">pending</span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 14px;">Sari — Bahasa Indonesia</div>
+                                    <div style="font-size: 12px; color: var(--ink-400);" data-i18n="teacher_sub_time2">5 jam lalu · Menunggu</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
+                                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--alert-100); display: flex; align-items: center; justify-content: center;">
+                                    <span class="icon" style="font-size: 20px; color: var(--alert-700);">error</span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 14px;">Raka — IPA Hewan</div>
+                                    <div style="font-size: 12px; color: var(--ink-400);" data-i18n="teacher_sub_time3">Kemarin · Perlu ulang</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline" style="width: 100%;">
+                        <span class="icon">download</span> <span data-i18n="teacher_export">Ekspor Laporan</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== 10. PENGATURAN ==================== -->
+            <div id="pengaturan" class="screen">
+                <div class="screen-content with-nav">
+                    <h2 style="margin-bottom: 16px;" data-i18n="settings_title">Pengaturan</h2>
+
+                    <div class="card" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 16px; margin-bottom: 16px;" data-i18n="settings_device">Perangkat Alat</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <p style="font-weight: 600; color: var(--ink-900); margin: 0;">BRaiLLE-001</p>
+                                <p style="font-size: 14px; margin: 0;" data-i18n="settings_battery">Baterai: 85%</p>
+                            </div>
+                            <button class="btn btn-outline btn-mini" style="border-color: var(--alert-300); color: var(--alert-700);" data-i18n="settings_disconnect">Putus</button>
+                        </div>
+                    </div>
+
+                    <!-- Language Preference -->
+                    <div class="card" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 16px; margin-bottom: 16px;" data-i18n="settings_language">Bahasa / Language</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-outline btn-mini lang-setting-btn" style="flex: 1;" onclick="setLang('id')" data-lang="id">🇮🇩 Indonesia</button>
+                            <button class="btn btn-outline btn-mini lang-setting-btn" style="flex: 1;" onclick="setLang('en')" data-lang="en">🇬🇧 English</button>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size: 16px; margin-bottom: 16px;" data-i18n="settings_prefs">Preferensi</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p style="font-weight: 600; color: var(--ink-900); margin: 0;" data-i18n="settings_braille_out">Output Braille Fisik</p>
+                            <div style="width: 40px; height: 24px; background: var(--honeydew-300); border-radius: 12px; position: relative; cursor: pointer;">
+                                <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p style="font-weight: 600; color: var(--ink-900); margin: 0;" data-i18n="settings_audio">Audio Panduan (TTS)</p>
+                            <div style="width: 40px; height: 24px; background: var(--honeydew-300); border-radius: 12px; position: relative; cursor: pointer;">
+                                <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p style="font-weight: 600; color: var(--ink-900); margin: 0;" data-i18n="settings_offline">Mode Offline</p>
+                            <div style="width: 40px; height: 24px; background: var(--ink-200); border-radius: 12px; position: relative; cursor: pointer;">
+                                <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; left: 2px; top: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 12px; color: var(--ink-300); margin-top: 40px;">Versi 1.0.0 · DotCode_ 2026</p>
+                </div>
+            </div>
+
+            <!-- ==================== 11. BLUETOOTH CONNECT (NEW) ==================== -->
+            <div id="connect" class="screen">
+                <div class="screen-content" style="padding-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span class="icon" onclick="navTo('home')" style="cursor: pointer;">arrow_back</span>
+                        <h2 style="font-size: 20px;" data-i18n="ble_title">Hubungkan BraillePad</h2>
+                    </div>
+
+                    <!-- Connection Status Hero -->
+                    <div class="card" style="text-align: center; background: var(--honeydew-100); border: 2px solid var(--honeydew-300);">
+                        <div style="width: 72px; height: 72px; background: var(--honeydew-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                            <span class="icon" style="font-size: 36px; color: var(--honeydew-700);">bluetooth_connected</span>
+                        </div>
+                        <h3 style="font-size: 18px; margin-bottom: 4px;" data-i18n="ble_connected">Terhubung</h3>
+                        <p style="font-size: 14px; color: var(--honeydew-700); margin: 0;">BRaiLLE-001 (ESP32)</p>
+                    </div>
+
+                    <!-- Device Info Card -->
+                    <div class="card card-flat">
+                        <h3 style="font-size: 14px; color: var(--ink-500); margin-bottom: 12px;" data-i18n="ble_device_info">INFO PERANGKAT</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: var(--ink-500);" data-i18n="ble_name">Nama</span>
+                                <span style="font-size: 14px; font-weight: 700;">BRaiLLE-001</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: var(--ink-500);" data-i18n="ble_type">Tipe</span>
+                                <span style="font-size: 14px; font-weight: 700;">ESP32 BLE</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: var(--ink-500);" data-i18n="ble_cells">Jumlah Sel</span>
+                                <span style="font-size: 14px; font-weight: 700;">16 sel</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: var(--ink-500);" data-i18n="ble_battery">Baterai</span>
+                                <span style="font-size: 14px; font-weight: 700;">
+                                    <span class="icon" style="font-size: 16px; color: var(--honeydew-500); vertical-align: middle;">battery_5_bar</span> 87%
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: var(--ink-500);" data-i18n="ble_firmware">Firmware</span>
+                                <span style="font-size: 14px; font-weight: 700;">v2.1.3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scanning / Available Devices -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 style="font-size: 16px;" data-i18n="ble_other_devices">Perangkat Lain</h3>
+                            <div class="ble-scanning">
+                                <span class="icon spin-icon" style="font-size: 18px;">autorenew</span>
+                                <span data-i18n="ble_scanning">Memindai...</span>
+                            </div>
+                        </div>
+
+                        <div class="ble-device-card" style="margin-bottom: 12px; opacity: 0.6;">
+                            <div class="ble-icon-wrap" style="background: var(--paper-100);">
+                                <span class="icon" style="color: var(--ink-400);">bluetooth</span>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; font-size: 15px;">BRaiLLE-002</div>
+                                <div style="font-size: 12px; color: var(--ink-400);" data-i18n="ble_available">Tersedia · ESP32</div>
+                            </div>
+                            <button class="btn btn-outline btn-mini" data-i18n="ble_pair">Pasangkan</button>
+                        </div>
+
+                        <div class="ble-device-card" style="opacity: 0.4;">
+                            <div class="ble-icon-wrap" style="background: var(--paper-100);">
+                                <span class="icon" style="color: var(--ink-300);">bluetooth_searching</span>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; font-size: 15px; color: var(--ink-400);">Unknown Device</div>
+                                <div style="font-size: 12px; color: var(--ink-300);" data-i18n="ble_weak">Sinyal Lemah</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disconnect Button -->
+                    <button class="btn btn-danger" style="width: 100%; margin-top: auto;" data-i18n="ble_disconnect">
+                        <span class="icon">bluetooth_disabled</span> Putuskan Koneksi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav" id="bottomNav">
+                <a class="nav-item active" onclick="navTo('home')" id="nav-home">
+                    <span class="icon">home</span><span data-i18n="nav_home">Beranda</span>
+                </a>
+                <a class="nav-item" onclick="navTo('pindai')" id="nav-pindai">
+                    <span class="icon">document_scanner</span><span data-i18n="nav_scan">Pindai</span>
+                </a>
+                <a class="nav-item" onclick="navTo('riwayat')" id="nav-riwayat">
+                    <span class="icon">history</span><span data-i18n="nav_history">Riwayat</span>
+                </a>
+                <a class="nav-item" onclick="navTo('guru')" id="nav-guru">
+                    <span class="icon">school</span><span data-i18n="nav_teacher">Guru</span>
+                </a>
+                <a class="nav-item" onclick="navTo('pengaturan')" id="nav-pengaturan">
+                    <span class="icon">settings</span><span data-i18n="nav_settings">Pengaturan</span>
+                </a>
+            </div>
+
         </div>
-      </div>
-      <div class="screen-label">5. Output Braille + Audio</div>
     </div>
-  </div>
 
-  <!-- PHONE 6: Reading Screen (Braille Stream full-screen) -->
-  <div class="phone-frame" id="phone-reading">
-    <div class="screen" style="background:var(--ink-900)">
-      <div class="statusbar dark"><span>9:41</span><span>◍ ▮▮▮ 76%</span></div>
-      <div class="reading-screen">
-        <!-- Header -->
-        <div class="reading-header">
-          <div class="icon-btn" style="background:rgba(255,255,255,.1);color:var(--paper-0);border:none">
-            <span class="icon">arrow_back</span>
-          </div>
-          <div style="flex:1">
-            <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);opacity:.6">Soal 3.</div>
-            <div style="font:var(--type-heading);text-transform:uppercase">Aliran Braille</div>
-          </div>
-          <span class="badge badge-tactile"><span class="icon" style="font-size:12px">touch_app</span> Braille</span>
-        </div>
+    <script>
+        // ============================================================
+        // INTERNATIONALIZATION (i18n) — English & Indonesian
+        // ============================================================
+        const translations = {
+            id: {
+                // Switcher
+                sw_onboarding: '1. Onboarding', sw_home: '2. Beranda', sw_scan: '3. Pindai', sw_process: '4. Proses',
+                sw_result: '5. Hasil', sw_read: '6. Baca', sw_voice: '7. Suara', sw_history: '8. Riwayat',
+                sw_teacher: '9. Guru', sw_settings: '10. Pengaturan', sw_connect: '11. Koneksi',
+                // Onboarding
+                onboard_title: 'Belajar Braille<br>Lebih Mudah', onboard_subtitle: 'Baca Teks Materi Secara Mandiri', onboard_btn: 'Mulai Sekarang',
+                // Home
+                home_by: 'oleh DotCode_', home_device: 'Alat Terhubung', home_scan_title: 'Pindai Materi Baru',
+                home_scan_desc: 'Arahkan kamera ke teks untuk mengubahnya menjadi braille.',
+                home_scan_btn: 'Pindai Sekarang', home_stat_read: 'Materi Dibaca', home_stat_acc: 'Akurasi Jawaban',
+                home_recent: 'Terakhir Dibaca', home_recent_time: 'Kemarin, 14:30',
+                // Scan
+                scan_hint: 'Posisikan teks di dalam bingkai',
+                // Process
+                proc_title: 'Memproses Teks...', proc_step1: 'Membaca gambar', proc_step2: 'Mendeteksi teks (OCR)',
+                proc_step3: 'Mengonversi ke Braille', proc_btn: 'Lihat Hasil',
+                // Result
+                result_title: 'Hasil Konversi', result_ready: 'Siap', result_original: 'TEKS ASLI',
+                result_braille: 'OUTPUT BRAILLE', result_send: 'Kirim ke BraillePad',
+                result_read: 'Mode Baca', result_answer: 'Jawab',
+                // Reading
+                read_page: 'Halaman 1/1', read_prev: 'Mundur', read_answer: 'Jawab', read_next: 'Maju',
+                // Voice
+                voice_title: 'Jawab Pertanyaan', voice_question_label: 'PERTANYAAN',
+                voice_question: 'Apa yang ibu beli di pasar?', voice_recording: 'Merekam...',
+                voice_transcript_label: 'Transkrip:', voice_send: 'Kirim ke Guru',
+                // History
+                history_title: 'Riwayat', history_done: 'Selesai', history_reviewed: 'Diperiksa Guru',
+                history_retry: 'Perlu Diulang', history_time1: 'Hari ini, 09:00', history_time2: 'Kemarin, 10:15',
+                // Teacher
+                teacher_title: 'Dashboard Guru', teacher_period: 'Minggu Ini', teacher_students: 'Siswa Aktif',
+                teacher_tasks: 'Tugas Selesai', teacher_accuracy: 'Rata-rata Akurasi', teacher_pending: 'Perlu Diperiksa',
+                teacher_activity: 'Aktivitas Mingguan', teacher_student_progress: 'Progres Siswa',
+                teacher_submissions: 'Kiriman Terbaru', teacher_export: 'Ekspor Laporan',
+                teacher_sub_time1: '2 jam lalu · Akurasi 94%', teacher_sub_time2: '5 jam lalu · Menunggu',
+                teacher_sub_time3: 'Kemarin · Perlu ulang',
+                // Settings
+                settings_title: 'Pengaturan', settings_device: 'Perangkat Alat', settings_battery: 'Baterai: 85%',
+                settings_disconnect: 'Putus', settings_language: 'Bahasa / Language', settings_prefs: 'Preferensi',
+                settings_braille_out: 'Output Braille Fisik', settings_audio: 'Audio Panduan (TTS)',
+                settings_offline: 'Mode Offline',
+                // BLE Connect
+                ble_title: 'Hubungkan BraillePad', ble_connected: 'Terhubung', ble_device_info: 'INFO PERANGKAT',
+                ble_name: 'Nama', ble_type: 'Tipe', ble_cells: 'Jumlah Sel', ble_battery: 'Baterai',
+                ble_firmware: 'Firmware', ble_other_devices: 'Perangkat Lain', ble_scanning: 'Memindai...',
+                ble_available: 'Tersedia · ESP32', ble_pair: 'Pasangkan', ble_weak: 'Sinyal Lemah',
+                ble_disconnect: 'Putuskan Koneksi',
+                // Nav
+                nav_home: 'Beranda', nav_scan: 'Pindai', nav_history: 'Riwayat', nav_teacher: 'Guru', nav_settings: 'Pengaturan',
+            },
+            en: {
+                sw_onboarding: '1. Onboarding', sw_home: '2. Home', sw_scan: '3. Scan', sw_process: '4. Process',
+                sw_result: '5. Result', sw_read: '6. Read', sw_voice: '7. Voice', sw_history: '8. History',
+                sw_teacher: '9. Teacher', sw_settings: '10. Settings', sw_connect: '11. Connect',
+                onboard_title: 'Learn Braille<br>The Easy Way', onboard_subtitle: 'Read Study Materials Independently', onboard_btn: 'Get Started',
+                home_by: 'by DotCode_', home_device: 'Device Connected', home_scan_title: 'Scan New Material',
+                home_scan_desc: 'Point your camera at text to convert it into braille.',
+                home_scan_btn: 'Scan Now', home_stat_read: 'Materials Read', home_stat_acc: 'Answer Accuracy',
+                home_recent: 'Recently Read', home_recent_time: 'Yesterday, 14:30',
+                scan_hint: 'Position text inside the frame',
+                proc_title: 'Processing Text...', proc_step1: 'Reading image', proc_step2: 'Detecting text (OCR)',
+                proc_step3: 'Converting to Braille', proc_btn: 'View Result',
+                result_title: 'Conversion Result', result_ready: 'Ready', result_original: 'ORIGINAL TEXT',
+                result_braille: 'BRAILLE OUTPUT', result_send: 'Send to BraillePad',
+                result_read: 'Read Mode', result_answer: 'Answer',
+                read_page: 'Page 1/1', read_prev: 'Back', read_answer: 'Answer', read_next: 'Next',
+                voice_title: 'Answer Question', voice_question_label: 'QUESTION',
+                voice_question: 'What did mother buy at the market?', voice_recording: 'Recording...',
+                voice_transcript_label: 'Transcript:', voice_send: 'Send to Teacher',
+                history_title: 'History', history_done: 'Completed', history_reviewed: 'Teacher Reviewed',
+                history_retry: 'Needs Retry', history_time1: 'Today, 09:00', history_time2: 'Yesterday, 10:15',
+                teacher_title: 'Teacher Dashboard', teacher_period: 'This Week', teacher_students: 'Active Students',
+                teacher_tasks: 'Tasks Done', teacher_accuracy: 'Avg. Accuracy', teacher_pending: 'Needs Review',
+                teacher_activity: 'Weekly Activity', teacher_student_progress: 'Student Progress',
+                teacher_submissions: 'Recent Submissions', teacher_export: 'Export Report',
+                teacher_sub_time1: '2 hours ago · 94% accuracy', teacher_sub_time2: '5 hours ago · Pending',
+                teacher_sub_time3: 'Yesterday · Needs retry',
+                settings_title: 'Settings', settings_device: 'Device', settings_battery: 'Battery: 85%',
+                settings_disconnect: 'Disconnect', settings_language: 'Language / Bahasa', settings_prefs: 'Preferences',
+                settings_braille_out: 'Physical Braille Output', settings_audio: 'Audio Guide (TTS)',
+                settings_offline: 'Offline Mode',
+                ble_title: 'Connect BraillePad', ble_connected: 'Connected', ble_device_info: 'DEVICE INFO',
+                ble_name: 'Name', ble_type: 'Type', ble_cells: 'Cell Count', ble_battery: 'Battery',
+                ble_firmware: 'Firmware', ble_other_devices: 'Other Devices', ble_scanning: 'Scanning...',
+                ble_available: 'Available · ESP32', ble_pair: 'Pair', ble_weak: 'Weak Signal',
+                ble_disconnect: 'Disconnect',
+                nav_home: 'Home', nav_scan: 'Scan', nav_history: 'History', nav_teacher: 'Teacher', nav_settings: 'Settings',
+            }
+        };
 
-        <!-- Body with braille cells -->
-        <div class="reading-body">
-          <!-- Large braille cells -->
-          <div style="display:flex;gap:16px;justify-content:center;padding:12px 0">
-            <div class="braille-char-col">
-              <div class="braille-cell xl" id="reading-cell-0"></div>
-              <span class="braille-char-label" style="color:var(--paper-0)">L</span>
-            </div>
-            <div class="braille-char-col">
-              <div class="braille-cell xl" id="reading-cell-1"></div>
-              <span class="braille-char-label" style="color:var(--paper-0)">U</span>
-            </div>
-            <div class="braille-char-col">
-              <div class="braille-cell xl" id="reading-cell-2"></div>
-              <span class="braille-char-label" style="color:var(--paper-0)">A</span>
-            </div>
-            <div class="braille-char-col">
-              <div class="braille-cell xl" id="reading-cell-3"></div>
-              <span class="braille-char-label" style="color:var(--paper-0)">S</span>
-            </div>
-          </div>
+        let currentLang = 'id';
 
-          <!-- Flowing text with word highlight -->
-          <p style="font:var(--type-body);font-size:var(--text-lg);margin:0;line-height:1.7" id="reading-text">
-            <span class="word-highlight" style="color:rgba(255,255,255,.55)">hitunglah</span>
-            <span class="word-highlight" style="background:var(--vanila-200);color:var(--ink-900)">luas</span>
-            <span class="word-highlight" style="color:#fff">segitiga</span>
-            <span class="word-highlight" style="color:#fff">dengan</span>
-            <span class="word-highlight" style="color:#fff">alas</span>
-            <span class="word-highlight" style="color:#fff">12</span>
-            <span class="word-highlight" style="color:#fff">cm</span>
-            <span class="word-highlight" style="color:#fff">dan</span>
-            <span class="word-highlight" style="color:#fff">tinggi</span>
-            <span class="word-highlight" style="color:#fff">8</span>
-            <span class="word-highlight" style="color:#fff">cm.</span>
-          </p>
-
-          <!-- Progress -->
-          <div class="progress-bar">
-            <div class="progress-labels" style="color:rgba(255,255,255,.5)">
-              <span>Posisi</span>
-              <span class="value" style="color:var(--paper-0)">2 / 11</span>
-            </div>
-            <div class="progress-track" style="background:rgba(255,255,255,.15)">
-              <div class="progress-fill progress-fill-accent" style="width:18%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls panel -->
-        <div class="reading-controls">
-          <!-- Pad navigator -->
-          <div class="pad-nav" style="justify-content:center">
-            <button class="nav-btn nav-btn-inverse"><span class="icon">chevron_left</span></button>
-            <button class="nav-btn nav-btn-primary-inverse"><span class="icon">play_arrow</span> <span style="font:var(--type-label);color:inherit;margin-left:4px">Maju</span></button>
-            <button class="nav-btn nav-btn-inverse"><span class="icon">chevron_right</span></button>
-          </div>
-          <!-- Segmented -->
-          <div style="display:flex;justify-content:center">
-            <div class="segmented inverse" id="seg-reading">
-              <button class="seg-btn active" onclick="setSegment(this)"><span class="icon">touch_app</span> Braille</button>
-              <button class="seg-btn" onclick="setSegment(this)"><span class="icon">volume_up</span> Audio</button>
-              <button class="seg-btn" onclick="setSegment(this)"><span class="icon">tune</span> Keduanya</button>
-            </div>
-          </div>
-          <!-- Speed -->
-          <div class="speed-slider" style="color:var(--paper-0)">
-            <div class="slider-labels">
-              <span>Kecepatan</span>
-              <span class="slider-value">70 kpm</span>
-            </div>
-            <input type="range" min="20" max="160" step="5" value="70">
-          </div>
-          <!-- Device + Answer -->
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="device-status device-status-connected" style="background:rgba(174,198,167,.15);border-color:rgba(174,198,167,.3)">
-              <div class="status-icon"><span class="icon filled" style="font-size:16px">bluetooth_connected</span></div>
-              <span style="font:var(--type-label);color:var(--paper-0);font-size:12px">82%</span>
-            </div>
-            <button class="btn btn-inverse btn-sm"><span class="icon" style="font-size:18px">mic</span> Jawab</button>
-          </div>
-        </div>
-      </div>
-      <div class="screen-label" style="bottom:12px">6. Aliran Braille</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================================================================
-     ROW 4: VOICE ANSWER + RIWAYAT (History)
-     =================================================================== -->
-<div class="stage">
-
-  <!-- PHONE 7: Jawaban Suara (Voice Answer) -->
-  <div class="phone-frame" id="phone-answer">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 74%</span></div>
-      <div class="answer-screen">
-        <!-- Header -->
-        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--gutter-phone)">
-          <div class="icon-btn icon-btn-ghost">
-            <span class="icon">arrow_back</span>
-          </div>
-          <div style="flex:1">
-            <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary)">Jawaban suara</div>
-            <div style="font:var(--type-heading);text-transform:uppercase">Soal 3.</div>
-          </div>
-          <span class="badge badge-error"><span class="icon rec-dot" style="font-size:10px">fiber_manual_record</span> Merekam</span>
-        </div>
-
-        <!-- Content -->
-        <div style="padding:0 var(--gutter-phone);display:flex;flex-direction:column;gap:var(--space-4);flex:1">
-          <!-- Question card -->
-          <div class="card card-muted">
-            <div style="font:var(--type-caption);color:var(--text-secondary);margin-bottom:6px">Pertanyaan</div>
-            <div style="font:var(--type-body-strong)">Hitunglah luas segitiga dengan alas 12 cm dan tinggi 8 cm.</div>
-          </div>
-
-          <!-- Transcript card -->
-          <div class="card card-paper">
-            <!-- Waveform -->
-            <div class="waveform" id="waveform-answer">
-              <!-- Generated by JS -->
-            </div>
-            <!-- Transcript text -->
-            <div style="font:var(--type-body);min-height:96px;margin-top:var(--space-3)" id="answer-transcript">
-              luas segitiga sama dengan setengah kali alas kali tinggi, setengah kali 12 kali 8 sama dengan 48 sentimeter persegi
-            </div>
-            <div style="font:var(--type-data);font-size:var(--text-2xs);color:var(--text-muted);margin-top:var(--space-3);display:flex;align-items:center;gap:6px">
-              <span class="icon" style="font-size:14px">lock</span>
-              Diproses di perangkat · rekaman audio tidak disimpan
-            </div>
-          </div>
-
-          <!-- Progress -->
-          <div class="progress-bar">
-            <div class="progress-labels">
-              <span>Soal terjawab</span>
-              <span class="value">3 / 10</span>
-            </div>
-            <div class="progress-track"><div class="progress-fill progress-fill-ink" style="width:30%"></div></div>
-          </div>
-        </div>
-
-        <!-- Bottom actions -->
-        <div style="padding:var(--gutter-phone);display:flex;gap:var(--space-3)">
-          <button class="btn btn-secondary btn-lg"><span class="icon">stop</span> Selesai</button>
-          <button class="btn btn-device btn-lg btn-full"><span class="icon">send</span> Kirim ke Guru</button>
-        </div>
-      </div>
-      <div class="screen-label">7. Jawaban Suara</div>
-    </div>
-  </div>
-
-  <!-- PHONE 8: Riwayat (History) -->
-  <div class="phone-frame" id="phone-riwayat">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 88%</span></div>
-      <div class="screen-content" style="padding-top:8px">
-        <!-- Header -->
-        <div>
-          <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0">Riwayat</h2>
-          <span style="font:var(--type-caption);color:var(--text-secondary)">Semua materi yang pernah dipindai</span>
-        </div>
-
-        <!-- Search bar -->
-        <div style="display:flex;align-items:center;gap:var(--space-3);padding:12px 16px;border-radius:var(--radius-pill);background:var(--surface-muted);border:1px solid var(--border-subtle)">
-          <span class="icon" style="font-size:20px;color:var(--text-secondary)">search</span>
-          <span style="font:var(--type-body);color:var(--text-muted)">Cari materi…</span>
-        </div>
-
-        <!-- Filter chips -->
-        <div style="display:flex;gap:8px;overflow-x:auto">
-          <span class="badge badge-solid">Semua</span>
-          <span class="badge" style="background:var(--surface-muted);color:var(--text-body)">Hari ini</span>
-          <span class="badge" style="background:var(--surface-muted);color:var(--text-body)">Minggu ini</span>
-          <span class="badge" style="background:var(--surface-muted);color:var(--text-body)">Bulan ini</span>
-        </div>
-
-        <!-- Today section -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Hari ini</div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--vanila-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--vanila-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Soal Matematika Bab 3</div>
-              <div class="row-subtitle">08:15 · 9 blok · 94%</div>
-            </div>
-            <span class="badge badge-ok" style="font-size:10px">Selesai</span>
-          </div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--vanila-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--vanila-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Geometri — Bangun Datar</div>
-              <div class="row-subtitle">10:22 · 6 blok · 91%</div>
-            </div>
-            <span class="badge badge-ok" style="font-size:10px">Selesai</span>
-          </div>
-        </div>
-
-        <!-- Yesterday section -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Kemarin</div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--alice-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--alice-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Teks Bahasa Indonesia</div>
-              <div class="row-subtitle">13:02 · 12 blok · 97%</div>
-            </div>
-            <span class="badge badge-ok" style="font-size:10px">Selesai</span>
-          </div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--alice-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--alice-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">Puisi Chairil Anwar</div>
-              <div class="row-subtitle">14:30 · 4 blok · 88%</div>
-            </div>
-            <span class="badge badge-warn" style="font-size:10px">Sebagian</span>
-          </div>
-        </div>
-
-        <!-- Older section -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Minggu lalu</div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--honeydew-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--honeydew-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">IPA — Ekosistem</div>
-              <div class="row-subtitle">Sen, 10:30 · 8 blok · 95%</div>
-            </div>
-            <span class="badge badge-ok" style="font-size:10px">Selesai</span>
-          </div>
-          <div class="list-row interactive">
-            <div style="width:40px;height:40px;border-radius:var(--radius-sm);background:var(--honeydew-100);display:grid;place-items:center">
-              <span class="icon" style="font-size:20px;color:var(--honeydew-700)">description</span>
-            </div>
-            <div class="row-content">
-              <div class="row-title">PKN — Pancasila</div>
-              <div class="row-subtitle">Sel, 09:10 · 5 blok · 92%</div>
-            </div>
-            <span class="badge badge-ok" style="font-size:10px">Selesai</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bottom Navigation -->
-      <div class="bottom-nav">
-        <div class="nav-item">
-          <span class="icon">home</span>
-          <span>Beranda</span>
-        </div>
-        <div class="nav-item">
-          <span class="icon">photo_camera</span>
-          <span>Pindai</span>
-        </div>
-        <div class="nav-item active">
-          <span class="icon filled">history</span>
-          <span>Riwayat</span>
-        </div>
-      </div>
-      <div class="screen-label">8. Riwayat</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================================================================
-     ROW 5: DASHBOARD GURU + PENGATURAN
-     =================================================================== -->
-<div class="stage">
-
-  <!-- PHONE 9: Dashboard Guru -->
-  <div class="phone-frame" id="phone-dashboard">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 91%</span></div>
-      <div class="screen-content" style="padding-top:8px">
-        <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0">Dashboard Guru</h2>
-            <span style="font:var(--type-caption);color:var(--text-secondary)">Kelas 8 · 3 siswa terhubung</span>
-          </div>
-          <div class="device-status device-status-connected" style="padding:6px 12px 6px 8px">
-            <div class="status-icon" style="width:24px;height:24px"><span class="icon filled" style="font-size:16px">bluetooth_connected</span></div>
-            <span style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps)">BLE</span>
-          </div>
-        </div>
-
-        <!-- Stat tiles row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="stat-tile stat-tile-paper">
-            <div class="stat-label"><span class="icon">description</span> Materi diakses</div>
-            <div class="stat-value"><span class="number">23</span></div>
-          </div>
-          <div class="stat-tile stat-tile-data">
-            <div class="stat-label"><span class="icon">speed</span> Rata kec. baca</div>
-            <div class="stat-value"><span class="number">42</span><span class="unit">kpm</span></div>
-          </div>
-        </div>
-
-        <!-- Weekly activity chart -->
-        <div>
-          <h3 style="font:var(--type-heading);margin-bottom:var(--space-3)">Aktivitas Mingguan</h3>
-          <div class="card card-paper">
-            <div class="bar-chart">
-              <div class="bar-col"><div class="bar" style="height:55%"></div><span class="bar-label">S</span></div>
-              <div class="bar-col"><div class="bar" style="height:72%"></div><span class="bar-label">S</span></div>
-              <div class="bar-col"><div class="bar" style="height:88%"></div><span class="bar-label">R</span></div>
-              <div class="bar-col"><div class="bar" style="height:60%"></div><span class="bar-label">K</span></div>
-              <div class="bar-col"><div class="bar" style="height:45%"></div><span class="bar-label">J</span></div>
-              <div class="bar-col"><div class="bar" style="height:80%"></div><span class="bar-label">S</span></div>
-              <div class="bar-col"><div class="bar" style="height:35%"></div><span class="bar-label">M</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Attention needed -->
-        <div>
-          <h3 style="font:var(--type-heading);margin-bottom:var(--space-3)">Perlu Perhatian</h3>
-          <div class="attention-item">
-            <div class="attention-dot" style="background:var(--vanila-500)"></div>
-            <div class="att-content">
-              <div class="att-title">Segmen "Trigonometri"</div>
-              <div class="att-subtitle">Sering diulang · perlu dicek guru</div>
-            </div>
-          </div>
-          <div class="attention-item">
-            <div class="attention-dot" style="background:var(--honeydew-500)"></div>
-            <div class="att-content">
-              <div class="att-title">Adi · Aljabar</div>
-              <div class="att-subtitle">Lancar · 6 dokumen selesai</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stat tile full width -->
-        <div class="stat-tile stat-tile-highlight">
-          <div class="stat-label"><span class="icon">schedule</span> Jam transkripsi dihemat</div>
-          <div class="stat-value"><span class="number">9</span><span class="unit">jam</span></div>
-          <div class="stat-delta" style="color:var(--honeydew-700)">≈ 2 jam/hari</div>
-        </div>
-
-        <!-- Export button -->
-        <button class="btn btn-primary btn-lg btn-full">
-          <span class="icon">download</span>
-          Ekspor Laporan Mingguan
-        </button>
-      </div>
-      <div class="screen-label">9. Dashboard Guru</div>
-    </div>
-  </div>
-
-  <!-- PHONE 10: Pengaturan (Settings) -->
-  <div class="phone-frame" id="phone-settings">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 95%</span></div>
-      <div class="screen-content" style="padding-top:8px">
-        <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0">Pengaturan</h2>
-
-        <!-- Device section -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Perangkat BRaiLLE Pad</div>
-          <div class="card card-paper">
-            <div style="display:flex;align-items:center;gap:var(--space-3)">
-              <div style="width:12px;height:12px;border-radius:50%;background:var(--honeydew-500)"></div>
-              <div style="flex:1">
-                <div style="font:var(--type-body-strong)">Terhubung (BLE)</div>
-                <div style="font:var(--type-caption);color:var(--text-secondary)">BRaiLLE-Pad-2sel · 87%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Output section -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Output</div>
-          <div class="switch-row" onclick="this.querySelector('.switch-track').classList.toggle('on');this.querySelector('.switch-track').classList.toggle('off')">
-            <div class="switch-label">
-              <span class="label-text">Output Braille (pin)</span>
-            </div>
-            <div class="switch-track on"><div class="switch-thumb"></div></div>
-          </div>
-          <div style="border-bottom:1px solid var(--border-subtle)"></div>
-          <div class="switch-row" onclick="this.querySelector('.switch-track').classList.toggle('on');this.querySelector('.switch-track').classList.toggle('off')">
-            <div class="switch-label">
-              <span class="label-text">Output Audio (TTS)</span>
-            </div>
-            <div class="switch-track on"><div class="switch-thumb"></div></div>
-          </div>
-          <div style="border-bottom:1px solid var(--border-subtle)"></div>
-          <div class="switch-row" onclick="this.querySelector('.switch-track').classList.toggle('on');this.querySelector('.switch-track').classList.toggle('off')">
-            <div class="switch-label">
-              <span class="label-text">Mode offline penuh</span>
-            </div>
-            <div class="switch-track on"><div class="switch-thumb"></div></div>
-          </div>
-        </div>
-
-        <!-- Braille system -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Sistem Braille</div>
-          <div class="list-row interactive">
-            <div class="row-content">
-              <div class="row-title">Braille Indonesia</div>
-            </div>
-            <span style="font:var(--type-data);color:var(--text-secondary)">Tingkat 1</span>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-        </div>
-
-        <!-- Accessibility -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Aksesibilitas</div>
-          <div class="list-row interactive">
-            <div class="row-content">
-              <div class="row-title">Ukuran teks &amp; kontras</div>
-            </div>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-          <div class="list-row interactive">
-            <div class="row-content">
-              <div class="row-title">Umpan balik haptic</div>
-            </div>
-            <span class="icon" style="font-size:20px;color:var(--ink-300)">chevron_right</span>
-          </div>
-        </div>
-
-        <!-- Privacy -->
-        <div class="card card-muted" style="padding:var(--space-4)">
-          <div style="font:var(--type-caption);color:var(--text-secondary);display:flex;align-items:center;gap:6px">
-            <span class="icon" style="font-size:16px">lock</span>
-            Diproses di perangkat · rekaman audio tidak disimpan
-          </div>
-        </div>
-
-        <!-- About -->
-        <div style="text-align:center;padding:var(--space-4) 0">
-          <div style="font:var(--type-label);color:var(--ink-900)">BRaiLLE v1.0</div>
-          <div style="font:var(--type-caption);color:var(--text-secondary);margin-top:4px">by DotCode — SMA Regina Pacis Surakarta</div>
-          <div style="font:var(--type-caption);color:var(--text-muted);margin-top:2px">Samsung Solve for Tomorrow 2026</div>
-        </div>
-      </div>
-      <div class="screen-label">10. Pengaturan</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================================================================
-     ROW 6: COMPONENT SHOWCASE
-     =================================================================== -->
-<div class="stage-header" style="margin-top:24px">
-  <h1 style="font-size:var(--text-3xl)">Komponen</h1>
-  <p>Pustaka komponen design system BRaiLLE</p>
-</div>
-
-<div class="stage">
-  <!-- Component showcase phone -->
-  <div class="phone-frame" id="phone-components">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 100%</span></div>
-      <div class="screen-content" style="padding-top:12px">
-        <!-- Buttons -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Tombol</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <button class="btn btn-primary"><span class="icon">photo_camera</span> Ambil Foto</button>
-            <button class="btn btn-secondary">Dari Galeri</button>
-            <button class="btn btn-ghost">Batal</button>
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-            <button class="btn btn-highlight"><span class="icon">touch_app</span> Kirim ke Pad</button>
-            <button class="btn btn-device"><span class="icon">bluetooth_connected</span> Hubungkan</button>
-          </div>
-        </div>
-
-        <!-- Badges -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Lencana</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span class="badge badge-ok"><span class="icon">check_circle</span> Berhasil</span>
-            <span class="badge badge-warn"><span class="icon">warning</span> Perhatian</span>
-            <span class="badge badge-error"><span class="icon">error</span> Gagal</span>
-            <span class="badge badge-info"><span class="icon">info</span> Info</span>
-            <span class="badge badge-tactile"><span class="icon">touch_app</span> Braille</span>
-            <span class="badge badge-audio"><span class="icon">volume_up</span> Audio</span>
-            <span class="badge badge-solid">Baru</span>
-          </div>
-        </div>
-
-        <!-- Role badges -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Peran Blok OCR</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span class="role-badge" style="color:var(--ink-900)"><span class="role-dot"></span>Judul</span>
-            <span class="role-badge" style="color:var(--ink-700)"><span class="role-dot"></span>Subjudul</span>
-            <span class="role-badge" style="color:var(--vanila-700)"><span class="role-dot"></span>Soal</span>
-            <span class="role-badge" style="color:var(--honeydew-700)"><span class="role-dot"></span>Butir</span>
-            <span class="role-badge" style="color:var(--ink-500)"><span class="role-dot"></span>Paragraf</span>
-          </div>
-        </div>
-
-        <!-- Device status chips -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Status Perangkat</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div class="device-status device-status-connected">
-              <div class="status-icon"><span class="icon filled" style="font-size:19px">bluetooth_connected</span></div>
-              <span style="font:var(--type-label)">Pad tersambung</span>
-              <span style="font:var(--type-data);font-size:var(--text-2xs);color:var(--ink-600)">16 sel · 87%</span>
-            </div>
-            <div class="device-status device-status-pairing">
-              <div class="status-icon"><span class="icon filled" style="font-size:19px;color:var(--vanila-700)">bluetooth_searching</span></div>
-              <span style="font:var(--type-label)">Mencari pad…</span>
-              <span style="font:var(--type-data);font-size:var(--text-2xs);color:var(--ink-600)">16 sel</span>
-            </div>
-            <div class="device-status device-status-offline">
-              <div class="status-icon"><span class="icon filled" style="font-size:19px;color:var(--ink-500)">bluetooth_disabled</span></div>
-              <span style="font:var(--type-label)">Pad tidak tersambung</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Segmented toggle -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Segmented Toggle</div>
-          <div class="segmented" id="seg-toggle">
-            <button class="seg-btn active" onclick="setSegment(this)"><span class="icon">touch_app</span> Braille</button>
-            <button class="seg-btn" onclick="setSegment(this)"><span class="icon">volume_up</span> Audio</button>
-            <button class="seg-btn" onclick="setSegment(this)"><span class="icon">tune</span> Keduanya</button>
-          </div>
-        </div>
-
-        <!-- Block card sample -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Kartu Blok OCR</div>
-          <div class="block-card selected">
-            <div class="block-meta">
-              <span class="role-badge" style="color:var(--vanila-700)"><span class="role-dot"></span>Soal</span>
-              <span style="font:var(--type-data);color:var(--text-accent)">penanda: 3.</span>
-              <span class="block-id">#4 · kol 0</span>
-            </div>
-            <p class="block-text">Hitunglah luas segitiga dengan alas 12 cm dan tinggi 8 cm.</p>
-            <div class="confidence-bar">
-              <div class="confidence-track"><div class="confidence-fill" style="width:94%;background:var(--status-ok)"></div></div>
-              94%
-            </div>
-          </div>
-        </div>
-
-        <!-- Capture failure -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Kegagalan Tangkap</div>
-          <div class="capture-failure">
-            <div class="fail-content">
-              <div class="fail-icon"><span class="icon">blur_on</span></div>
-              <div>
-                <h3>Foto kurang tajam</h3>
-                <p>Tahan perangkat lebih stabil, lalu foto lagi.</p>
-              </div>
-            </div>
-            <button class="btn btn-primary btn-lg btn-full"><span class="icon">refresh</span> Coba Lagi</button>
-          </div>
-        </div>
-
-      </div>
-      <div class="screen-label">Komponen</div>
-    </div>
-  </div>
-
-  <!-- Color palette showcase phone -->
-  <div class="phone-frame" id="phone-colors">
-    <div class="screen">
-      <div class="statusbar"><span>9:41</span><span>◍ ▮▮▮ 100%</span></div>
-      <div class="screen-content" style="padding-top:12px">
-        <h2 style="font:var(--type-title);letter-spacing:-0.02em;margin:0;font-size:var(--text-xl)">Palet Warna</h2>
-        <p style="font:var(--type-caption);color:var(--text-secondary)">Lima warna brand DotCode</p>
-
-        <!-- Main 5 colors -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div style="background:var(--alice-200);border-radius:var(--radius-md);padding:20px 14px;height:100px;display:flex;flex-direction:column;justify-content:flex-end">
-            <span style="font:var(--type-label);font-size:11px">Alice Blue</span>
-            <span style="font:var(--type-data);font-size:10px;opacity:.6">#D8DFE9</span>
-          </div>
-          <div style="background:var(--honeydew-200);border-radius:var(--radius-md);padding:20px 14px;height:100px;display:flex;flex-direction:column;justify-content:flex-end">
-            <span style="font:var(--type-label);font-size:11px">Honeydew</span>
-            <span style="font:var(--type-data);font-size:10px;opacity:.6">#CFDECA</span>
-          </div>
-          <div style="background:var(--vanila-200);border-radius:var(--radius-md);padding:20px 14px;height:100px;display:flex;flex-direction:column;justify-content:flex-end">
-            <span style="font:var(--type-label);font-size:11px">Vanila</span>
-            <span style="font:var(--type-data);font-size:10px;opacity:.6">#EFF0A3</span>
-          </div>
-          <div style="background:var(--ink-900);border-radius:var(--radius-md);padding:20px 14px;height:100px;display:flex;flex-direction:column;justify-content:flex-end;color:var(--paper-0)">
-            <span style="font:var(--type-label);font-size:11px">Eerie Black</span>
-            <span style="font:var(--type-data);font-size:10px;opacity:.6">#212121</span>
-          </div>
-        </div>
-        <div style="background:var(--paper-50);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:20px 14px;height:60px;display:flex;flex-direction:column;justify-content:flex-end">
-          <span style="font:var(--type-label);font-size:11px">Ghost White</span>
-          <span style="font:var(--type-data);font-size:10px;opacity:.6">#F6F5FA</span>
-        </div>
-
-        <!-- Channel colors -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Kanal Output</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--channel-tactile-bg);border:1px solid var(--vanila-300)">
-              <span class="icon" style="color:var(--vanila-700)">touch_app</span>
-              <span style="font:var(--type-label);color:var(--vanila-700)">Taktil (Braille)</span>
-              <span style="margin-left:auto;font:var(--type-data);font-size:10px;color:var(--vanila-700)">Vanila</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--channel-audio-bg);border:1px solid var(--alice-300)">
-              <span class="icon" style="color:var(--alice-700)">volume_up</span>
-              <span style="font:var(--type-label);color:var(--alice-700)">Audio (TTS)</span>
-              <span style="margin-left:auto;font:var(--type-data);font-size:10px;color:var(--alice-700)">Alice Blue</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--channel-device-bg);border:1px solid var(--honeydew-300)">
-              <span class="icon" style="color:var(--honeydew-700)">bluetooth</span>
-              <span style="font:var(--type-label);color:var(--honeydew-700)">Perangkat (BLE)</span>
-              <span style="margin-left:auto;font:var(--type-data);font-size:10px;color:var(--honeydew-700)">Honeydew</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Typography -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Tipografi</div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Display · 48px · 800</span>
-              <div style="font:var(--type-display);font-size:32px;letter-spacing:var(--tracking-display)">Urbanist</div>
-            </div>
-            <div>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Title · 36px · 700</span>
-              <div style="font:var(--type-title);font-size:24px;letter-spacing:var(--tracking-display)">Judul Besar</div>
-            </div>
-            <div>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Heading · 24px · 700</span>
-              <div style="font:var(--type-heading);letter-spacing:var(--tracking-display)">Sub-judul</div>
-            </div>
-            <div>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Body · 17px · 400</span>
-              <div style="font:var(--type-body)">Teks isi untuk membaca</div>
-            </div>
-            <div>
-              <span style="font:var(--type-caption);color:var(--text-secondary)">Data · Mono</span>
-              <div style="font:var(--type-data)">712 ms · 94% · kol 0</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Braille cells showcase -->
-        <div>
-          <div style="font:var(--type-overline);text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--text-secondary);margin-bottom:var(--space-3)">Sel Braille</div>
-          <div class="card card-paper" style="display:flex;gap:14px;align-items:center;justify-content:center;padding:20px">
-            <div id="braille-showcase" style="display:flex;gap:14px"></div>
-          </div>
-          <div style="text-align:center;font:var(--type-data);font-size:var(--text-2xs);color:var(--text-secondary);margin-top:8px">
-            B · R · A · I · L · L · E
-          </div>
-        </div>
-      </div>
-      <div class="screen-label">Palet &amp; Tipografi</div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ===================================================================
-// INTERACTIONS & ANIMATIONS
-// ===================================================================
-
-// Segmented toggle interaction
-function setSegment(el) {
-  el.parentElement.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// Braille letter map (from design system)
-const BRAILLE_MAP = {
-  a:[1],b:[1,2],c:[1,4],d:[1,4,5],e:[1,5],f:[1,2,4],g:[1,2,4,5],h:[1,2,5],i:[2,4],j:[2,4,5],
-  k:[1,3],l:[1,2,3],m:[1,3,4],n:[1,3,4,5],o:[1,3,5],p:[1,2,3,4],q:[1,2,3,4,5],r:[1,2,3,5],
-  s:[2,3,4],t:[2,3,4,5],u:[1,3,6],v:[1,2,3,6],w:[2,4,5,6],x:[1,3,4,6],y:[1,3,4,5,6],z:[1,3,5,6],
-  ' ':[]
-};
-
-function createBrailleCell(char, active = false, inverse = false) {
-  const dots = BRAILLE_MAP[char.toLowerCase()] || [];
-  const cell = document.createElement('span');
-  cell.className = 'braille-cell';
-  cell.setAttribute('role', 'img');
-  cell.setAttribute('aria-label', 'braille ' + char);
-  for (let n = 1; n <= 6; n++) {
-    const col = n <= 3 ? 1 : 2;
-    const row = n <= 3 ? n : n - 3;
-    const dot = document.createElement('span');
-    const on = dots.includes(n);
-    if (inverse) {
-      dot.className = 'braille-dot ' + (on ? (active ? 'active-inverse' : 'raised-inverse') : 'flat-inverse');
-    } else {
-      dot.className = 'braille-dot ' + (on ? (active ? 'active' : 'raised') : 'flat');
-    }
-    dot.style.gridColumn = col;
-    dot.style.gridRow = row;
-    cell.appendChild(dot);
-  }
-  return cell;
-}
-
-function createBrailleCellInEl(el, char, active = false, inverse = false) {
-  el.innerHTML = '';
-  const dots = BRAILLE_MAP[char.toLowerCase()] || [];
-  for (let n = 1; n <= 6; n++) {
-    const col = n <= 3 ? 1 : 2;
-    const row = n <= 3 ? n : n - 3;
-    const dot = document.createElement('span');
-    const on = dots.includes(n);
-    if (inverse) {
-      dot.className = 'braille-dot ' + (on ? (active ? 'active-inverse' : 'raised-inverse') : 'flat-inverse');
-    } else {
-      dot.className = 'braille-dot ' + (on ? (active ? 'active' : 'raised') : 'flat');
-    }
-    dot.style.gridColumn = col;
-    dot.style.gridRow = row;
-    el.appendChild(dot);
-  }
-}
-
-// Render "BRAILLE" in the showcase
-const showcase = document.getElementById('braille-showcase');
-if (showcase) {
-  'braille'.split('').forEach((c, i) => {
-    showcase.appendChild(createBrailleCell(c, i === 0));
-  });
-}
-
-// Render OCR loading cells (o, c, r)
-const ocrCells = document.getElementById('ocr-loading-cells');
-if (ocrCells) {
-  'ocr'.split('').forEach((c, i) => {
-    const cell = createBrailleCell(c, false, true);
-    cell.classList.add('xl');
-    cell.id = 'ocr-cell-' + i;
-    ocrCells.appendChild(cell);
-  });
-}
-
-// Render reading screen braille cells
-const readingChars = 'luas';
-readingChars.split('').forEach((c, i) => {
-  const el = document.getElementById('reading-cell-' + i);
-  if (el) createBrailleCellInEl(el, c, i === 0, true);
-});
-
-// ===================================================================
-// ANIMATED INTERACTIONS
-// ===================================================================
-
-// Animate OCR loading cells cycling
-let ocrCycleIndex = 0;
-setInterval(() => {
-  for (let i = 0; i < 3; i++) {
-    const cell = document.getElementById('ocr-cell-' + i);
-    if (cell) {
-      const dots = cell.querySelectorAll('.braille-dot');
-      dots.forEach(d => {
-        if (i === ocrCycleIndex % 3) {
-          if (d.classList.contains('raised-inverse')) {
-            d.classList.remove('raised-inverse');
-            d.classList.add('active-inverse');
-          }
-        } else {
-          if (d.classList.contains('active-inverse')) {
-            d.classList.remove('active-inverse');
-            d.classList.add('raised-inverse');
-          }
+        function setLang(lang) {
+            currentLang = lang;
+            // Update all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            // Update outer lang toggle
+            document.querySelectorAll('.lang-toggle-outer .lang-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent.trim() === lang.toUpperCase());
+            });
+            // Update in-app lang pill
+            document.querySelectorAll('.lang-pill button').forEach(b => {
+                b.classList.toggle('active', b.textContent.trim() === lang.toUpperCase());
+            });
+            // Update settings lang buttons
+            document.querySelectorAll('.lang-setting-btn').forEach(b => {
+                const isActive = b.getAttribute('data-lang') === lang;
+                b.style.background = isActive ? 'var(--vanila-100)' : 'transparent';
+                b.style.borderColor = isActive ? 'var(--vanila-300)' : 'var(--ink-200)';
+                b.style.fontWeight = isActive ? '800' : '600';
+            });
+            document.documentElement.lang = lang;
         }
-      });
-    }
-  }
-  ocrCycleIndex++;
-}, 600);
 
-// Animate braille dot pulse on result screen
-setInterval(() => {
-  const dots = document.querySelectorAll('#phone-hasil .braille-dot.active, #phone-hasil .braille-dot.raised');
-  dots.forEach(d => {
-    if (d.classList.contains('active')) {
-      d.style.transform = `scale(${1 + Math.random() * 0.05})`;
-    }
-  });
-}, 2000);
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        const pagesWithNav = ['home', 'riwayat', 'guru', 'pengaturan'];
+        const allPages = ['onboarding', 'home', 'pindai', 'proses', 'hasil', 'baca', 'suara', 'riwayat', 'guru', 'pengaturan', 'connect'];
 
-// Waveform visualizer for answer screen
-const waveformEl = document.getElementById('waveform-answer');
-if (waveformEl) {
-  for (let i = 0; i < 32; i++) {
-    const bar = document.createElement('span');
-    bar.className = 'bar';
-    bar.style.height = (6 + ((i * 17) % 30)) + 'px';
-    bar.style.background = 'var(--ink-900)';
-    waveformEl.appendChild(bar);
-  }
-  // Animate waveform
-  setInterval(() => {
-    waveformEl.querySelectorAll('.bar').forEach(bar => {
-      bar.style.height = (4 + Math.random() * 36) + 'px';
-    });
-  }, 300);
-}
+        function navTo(pageId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
 
-// Animate reading braille cells cycling through the word
-const readingWords = 'hitunglah luas segitiga dengan alas 12 cm dan tinggi 8 cm'.split(' ');
-let readingWi = 1; // start at word index 1 ("luas")
-setInterval(() => {
-  readingWi = (readingWi + 1) % readingWords.length;
-  const word = readingWords[readingWi];
-  const chars = word.slice(0, 4).split('');
-  chars.forEach((c, i) => {
-    const el = document.getElementById('reading-cell-' + i);
-    const label = el?.parentElement?.querySelector('.braille-char-label');
-    if (el) {
-      createBrailleCellInEl(el, c, i === 0, true);
-    }
-    if (label) label.textContent = c.toUpperCase();
-  });
-  // Clear unused cells
-  for (let i = chars.length; i < 4; i++) {
-    const el = document.getElementById('reading-cell-' + i);
-    const label = el?.parentElement?.querySelector('.braille-char-label');
-    if (el) el.innerHTML = '';
-    if (label) label.textContent = '';
-  }
-  // Update word highlights
-  const textEl = document.getElementById('reading-text');
-  if (textEl) {
-    const spans = textEl.querySelectorAll('.word-highlight');
-    spans.forEach((s, i) => {
-      if (i === readingWi) {
-        s.style.background = 'var(--vanila-200)';
-        s.style.color = 'var(--ink-900)';
-      } else if (i < readingWi) {
-        s.style.background = 'transparent';
-        s.style.color = 'rgba(255,255,255,.55)';
-      } else {
-        s.style.background = 'transparent';
-        s.style.color = '#fff';
-      }
-    });
-  }
-}, 2000);
+            // Switcher active state
+            document.querySelectorAll('.switcher-btn').forEach(b => b.classList.remove('active'));
+            const idx = allPages.indexOf(pageId);
+            if (idx >= 0) document.querySelectorAll('.switcher-btn')[idx].classList.add('active');
 
-// Animate braille showcase cycling active cell
-let showcaseActive = 0;
-setInterval(() => {
-  if (showcase) {
-    const cells = showcase.querySelectorAll('.braille-cell');
-    cells.forEach((cell, i) => {
-      cell.querySelectorAll('.braille-dot').forEach(d => {
-        if (d.classList.contains('active')) {
-          d.classList.remove('active');
-          d.classList.add('raised');
+            // Bottom nav
+            const container = document.querySelector('.screen-container');
+            if (pagesWithNav.includes(pageId)) {
+                container.classList.remove('bottom-nav-hidden');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                const nav = document.getElementById('nav-' + pageId);
+                if (nav) nav.classList.add('active');
+            } else {
+                container.classList.add('bottom-nav-hidden');
+            }
+
+            // Waveform
+            if (pageId === 'suara') { startWaveform(); } else { stopWaveform(); }
+            // Braille loading animation
+            if (pageId === 'proses') { startBrailleLoading(); } else { stopBrailleLoading(); }
         }
-      });
-    });
-    showcaseActive = (showcaseActive + 1) % cells.length;
-    const activeCell = cells[showcaseActive];
-    if (activeCell) {
-      activeCell.querySelectorAll('.braille-dot.raised').forEach(d => {
-        d.classList.remove('raised');
-        d.classList.add('active');
-      });
-    }
-  }
-}, 800);
-</script>
 
+        // Init
+        navTo('home');
+        setLang('id');
+
+        // ============================================================
+        // WAVEFORM
+        // ============================================================
+        let waveInterval;
+        function startWaveform() {
+            const bars = document.querySelectorAll('.wave-bar');
+            waveInterval = setInterval(() => {
+                bars.forEach(bar => {
+                    bar.style.height = (Math.floor(Math.random() * 50) + 8) + 'px';
+                });
+            }, 200);
+        }
+        function stopWaveform() { clearInterval(waveInterval); }
+
+        // ============================================================
+        // BRAILLE LOADING — circular pin animation
+        // ============================================================
+        // Pin layout (grid order): 0=top-left, 1=top-right, 2=mid-left, 3=mid-right, 4=bot-left, 5=bot-right
+        // Circular order: 0 → 1 → 3 → 5 → 4 → 2 (clockwise around the cell)
+        const circularOrder = [0, 1, 3, 5, 4, 2];
+        let brailleLoadInterval;
+        let brailleStep = 0;
+
+        function startBrailleLoading() {
+            brailleStep = 0;
+            brailleLoadInterval = setInterval(() => {
+                // Clear all
+                for (let i = 0; i < 6; i++) {
+                    document.getElementById('ld' + i).classList.remove('lit');
+                }
+                // Light up current pin
+                const pinId = circularOrder[brailleStep % 6];
+                document.getElementById('ld' + pinId).classList.add('lit');
+                brailleStep++;
+            }, 300);
+        }
+        function stopBrailleLoading() {
+            clearInterval(brailleLoadInterval);
+        }
+
+        // ============================================================
+        // VOICE CONTROLS
+        // ============================================================
+        let isRecording = true;
+        let isPlaying = false;
+
+        function toggleRecord() {
+            isRecording = !isRecording;
+            const btn = document.getElementById('btnRecord');
+            const status = document.getElementById('voiceStatus');
+            if (isRecording) {
+                btn.classList.add('recording');
+                btn.innerHTML = '<span class="icon" style="font-size: 32px;">mic</span>';
+                status.innerHTML = '<span class="icon" style="font-size: 16px;">mic</span> ' + (currentLang === 'id' ? 'Merekam...' : 'Recording...');
+                status.className = 'tag tag-alert';
+                status.style.animation = 'pulse 1s infinite alternate';
+                startWaveform();
+            } else {
+                btn.classList.remove('recording');
+                btn.innerHTML = '<span class="icon" style="font-size: 32px;">mic</span>';
+                status.innerHTML = '<span class="icon" style="font-size: 16px;">pause</span> ' + (currentLang === 'id' ? 'Dijeda' : 'Paused');
+                status.className = 'tag tag-info';
+                status.style.animation = 'none';
+                stopWaveform();
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            const btn = document.getElementById('btnRecord');
+            const status = document.getElementById('voiceStatus');
+            btn.classList.remove('recording');
+            status.innerHTML = '<span class="icon" style="font-size: 16px;">check_circle</span> ' + (currentLang === 'id' ? 'Selesai' : 'Done');
+            status.className = 'tag tag-success';
+            status.style.animation = 'none';
+            stopWaveform();
+            // Reset bars to flat
+            document.querySelectorAll('.wave-bar').forEach(b => b.style.height = '4px');
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('btnPlay');
+            if (isPlaying) {
+                btn.innerHTML = '<span class="icon" style="font-size: 28px;">pause</span>';
+            } else {
+                btn.innerHTML = '<span class="icon" style="font-size: 28px;">play_arrow</span>';
+            }
+        }
+    </script>
 </body>
 </html>
